@@ -1,0 +1,2 @@
+defmodule Farseer do
+end

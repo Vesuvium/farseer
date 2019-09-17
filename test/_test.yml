@@ -1,0 +1,7 @@
+farseer: 0.1
+endpoints:
+    test:
+        path: /test
+        methods:
+            - get
+        to: "http://localhost:6000"
