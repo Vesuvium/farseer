@@ -15,7 +15,7 @@ defmodule FarseerTest.Router do
     conn = Router.call(conn, @opts)
     assert conn.state == :sent
     assert conn.status == 200
-    assert conn.resp_body == "0.1.0"
+    assert conn.resp_body == "0.2.0"
   end
 
   test "forwarding a request to Dispatch" do
