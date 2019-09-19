@@ -13,8 +13,12 @@ defmodule FarseerTest.Yaml do
   end
 
   test "the read function when the file is not found" do
-    dummy YamlElixir, [{"read_from_file", {:error, "e"}}] do
-      assert Yaml.read("path") == nil
+    dummy System, ["halt"] do
+      dummy IO, ["puts"] do
+        Yaml.read("path")
+        assert called(IO.puts("File path was not found"))
+        assert called(System.halt(1))
+      end
     end
   end
 
