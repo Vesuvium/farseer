@@ -1,4 +1,7 @@
 defmodule Farseer.Handlers.Http do
+  @moduledoc """
+  Generic HTTP handler. This is also the default handler.
+  """
   alias Farseer.Handlers.Http
   alias Farseer.Headers
   alias Plug.Conn
