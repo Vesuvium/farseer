@@ -20,7 +20,8 @@ defmodule Farseer.Yaml do
   @doc "Check the yaml has an endpoints key"
   def has_endpoints(yaml) do
     unless Map.has_key?(yaml, "endpoints") do
-      raise "No endpoints found in the configuration"
+      IO.puts("No endpoints found in the configuration")
+      System.halt(1)
     end
   end
 

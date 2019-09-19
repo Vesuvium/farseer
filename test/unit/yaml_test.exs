@@ -30,10 +30,14 @@ defmodule FarseerTest.Yaml do
   end
 
   test "the has_endpoints function without endpoints" do
-    error = "No endpoints found in the configuration"
+    message = "No endpoints found in the configuration"
 
-    assert_raise RuntimeError, error, fn ->
-      Yaml.has_endpoints(%{})
+    dummy System, ["halt"] do
+      dummy IO, ["puts"] do
+        Yaml.has_endpoints(%{})
+        assert called(IO.puts(message))
+        assert called(System.halt(1))
+      end
     end
   end
 
