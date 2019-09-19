@@ -9,7 +9,8 @@ defmodule Farseer.Yaml do
         yaml
 
       {:error, _error} ->
-        nil
+        IO.puts("File #{path} was not found")
+        System.halt(1)
     end
   end
 
