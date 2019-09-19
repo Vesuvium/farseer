@@ -1,5 +1,5 @@
-defmodule Farseer.Handler do
-  alias Farseer.Handler
+defmodule Farseer.Handlers.Http do
+  alias Farseer.Handlers.Http
   alias Farseer.Headers
   alias Plug.Conn
 
@@ -47,7 +47,7 @@ defmodule Farseer.Handler do
   end
 
   def handle(conn, to) do
-    response = Farseer.Handler.send(conn, to)
+    response = Http.send(conn, to)
 
     conn
     |> Headers.add_to_conn(response.headers)
@@ -60,19 +60,19 @@ defmodule Farseer.Handler do
   """
   def not_found(conn) do
     cond do
-      Handler.accepts?(conn, "application/json") ->
-        Handler.respond(
+      Http.accepts?(conn, "application/json") ->
+        Http.respond(
           conn,
           404,
           Jason.encode!(@not_found_json),
           "application/json"
         )
 
-      Handler.accepts?(conn, "text/html") ->
-        Handler.respond(conn, 404, @not_found_html, "text/html")
+      Http.accepts?(conn, "text/html") ->
+        Http.respond(conn, 404, @not_found_html, "text/html")
 
       true ->
-        Handler.respond(conn, 404, @not_found_text)
+        Http.respond(conn, 404, @not_found_text)
     end
   end
 end

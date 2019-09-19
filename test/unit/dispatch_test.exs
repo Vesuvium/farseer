@@ -3,7 +3,7 @@ defmodule FarseerTest.Dispatch do
   import Dummy
 
   alias Farseer.Dispatch
-  alias Farseer.Handler
+  alias Farseer.Handlers.Http
 
   defmodule Conn do
     defstruct request_path: "/", method: "GET"
@@ -19,17 +19,17 @@ defmodule FarseerTest.Dispatch do
   end
 
   test "call a matched routed", %{conn: conn} do
-    dummy Handler, ["handle/2"] do
+    dummy Http, ["handle/2"] do
       :ets.insert(:farseer_test, {"/", "GET", "to"})
       Dispatch.call(conn, :farseer_test)
-      assert called(Handler.handle(conn, "to"))
+      assert called(Http.handle(conn, "to"))
     end
   end
 
   test "call an unmatched route", %{conn: conn} do
-    dummy Handler, ["not_found"] do
+    dummy Http, ["not_found"] do
       Dispatch.call(conn, :farseer_test)
-      assert called(Handler.not_found(conn))
+      assert called(Http.not_found(conn))
     end
   end
 end
