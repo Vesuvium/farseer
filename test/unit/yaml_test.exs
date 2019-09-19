@@ -42,10 +42,14 @@ defmodule FarseerTest.Yaml do
   end
 
   test "the has_farseer function without farseer" do
-    error = "No farseer version specified in the configuration"
+    message = "No farseer version specified in the configuration"
 
-    assert_raise RuntimeError, error, fn ->
-      Yaml.has_farseer(%{})
+    dummy System, ["halt"] do
+      dummy IO, ["puts"] do
+        Yaml.has_farseer(%{})
+        assert called(IO.puts(message))
+        assert called(System.halt(1))
+      end
     end
   end
 
