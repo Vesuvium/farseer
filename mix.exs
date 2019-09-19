@@ -35,7 +35,7 @@ defmodule Farseer.MixProject do
     [
       {:confex, "~> 3.3.1"},
       {:cowboy, "~> 1.0"},
-      {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
+      {:credo, "~> 0.9.1", only: :dev, runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:dummy, "~> 1.2", only: :test},
       {:jason, "~> 1.1"},
