@@ -16,9 +16,13 @@ defmodule Farseer.Cli do
     IO.puts("Farseer version #{Application.spec(:farseer, :vsn)}")
   end
 
+  def example do
+    File.cp("priv/example.yml", "farseer.yml")
+  end
+
   def help do
     help =
-      "Usage: farseer [command]\n\nCommands:\n\nrun\t\tRun farseer\nversion\t\tPrint farseer's version"
+      "Usage: farseer [command]\n\nCommands:\n\nrun\t\tRun farseer\nexample\t\tGenerate an example farseer.yml file\nversion\t\tPrint farseer's version"
 
     IO.puts(help)
   end

@@ -45,6 +45,13 @@ defmodule FarseerTest.Cli do
     end
   end
 
+  test "example/0" do
+    dummy File, [{"cp", fn _a, _b -> :cp end}] do
+      assert Cli.example() == :cp
+      assert called(File.cp("priv/example.yml", "farseer.yml"))
+    end
+  end
+
   test "help/0" do
     assert Cli.help() == :ok
   end
