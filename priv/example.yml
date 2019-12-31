@@ -1,0 +1,5 @@
+farseer: 0.3
+/test:
+    methods:
+        - get
+    to: "https://example.com"
