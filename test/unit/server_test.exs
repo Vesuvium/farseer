@@ -3,6 +3,7 @@ defmodule FarseerTest.Server do
   import Dummy
 
   alias Farseer.Endpoints
+  alias Farseer.Log
   alias Farseer.Server
 
   test "loop" do
@@ -43,14 +44,18 @@ defmodule FarseerTest.Server do
   test "start" do
     dummy Supervisor, ["start_link/2"] do
       dummy Endpoints, [{"init", fn -> :ok end}] do
-        dummy Server, [
-          {"loop", fn -> :loop end},
-          {"children", fn -> :children end}
-        ] do
-          assert Server.start(1, 2) == Server.loop()
-          assert called(Endpoints.init())
-          options = [strategy: :one_for_one, name: Farseer.Supervisor]
-          assert called(Supervisor.start_link(Server.children(), options))
+        dummy Log, [{"server_start", :server_start}] do
+          dummy Server, [
+            {"port", fn -> "port" end},
+            {"loop", fn -> :loop end},
+            {"children", fn -> :children end}
+          ] do
+            assert Server.start(1, 2) == Server.loop()
+            assert called(Endpoints.init())
+            options = [strategy: :one_for_one, name: Farseer.Supervisor]
+            assert called(Supervisor.start_link(Server.children(), options))
+            assert called(Log.server_start("port"))
+          end
         end
       end
     end
