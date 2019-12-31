@@ -24,6 +24,12 @@ defmodule FarseerTest.Cli do
     end
   end
 
+  test "the main method with --version argument" do
+    dummy Cli, [{"version", fn -> :version end}] do
+      assert Cli.main(["--version"]) == :version
+    end
+  end
+
   test "the main method with run argument" do
     dummy Farseer.Server, ["start/2"] do
       Cli.main(["run"])
