@@ -4,6 +4,7 @@ defmodule Farseer.Cli do
 
     cond do
       command == "run" -> Farseer.Server.start(1, 2)
+      command == "example" -> Farseer.Cli.example()
       command == "version" -> Farseer.Cli.version()
       command == "--version" -> Farseer.Cli.version()
       command == "help" -> Farseer.Cli.help()

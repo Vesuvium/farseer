@@ -37,6 +37,12 @@ defmodule FarseerTest.Cli do
     end
   end
 
+  test "farseer example" do
+    dummy Cli, [{"example", fn -> :example end}] do
+      assert Cli.main(["example"]) == :example
+    end
+  end
+
   test "version/0" do
     dummy IO, ["puts"] do
       Cli.version()
