@@ -49,7 +49,7 @@ defmodule Farseer.MixProject do
   defp package do
     [
       name: :farseer,
-      files: ~w(mix.exs lib .formatter.exs README.md LICENSE),
+      files: ~w(mix.exs lib .formatter.exs README.md LICENSE priv/example.yml),
       maintainers: ["Jacopo Cascioli"],
       licenses: ["GPL-3.0-or-later"],
       links: %{"GitHub" => "https://github.com/strangemachines/farseer"}
