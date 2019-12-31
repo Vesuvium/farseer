@@ -46,6 +46,6 @@ defmodule FarseerTest.Cli do
   end
 
   test "the help method" do
-    assert Cli.help() == nil
+    assert Cli.help() == :ok
   end
 end

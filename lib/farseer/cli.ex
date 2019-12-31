@@ -17,5 +17,9 @@ defmodule Farseer.Cli do
   end
 
   def help do
+    help =
+      "Usage: farseer [command]\n\nCommands:\n\nrun\t\tRun farseer\nversion\t\tPrint farseer's version"
+
+    IO.puts(help)
   end
 end
