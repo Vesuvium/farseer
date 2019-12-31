@@ -1,8 +1,7 @@
 defmodule Farseer.Server do
-  require Logger
-
-  alias Plug.Cowboy
+  alias Farseer.Log
   alias Farseer.Router
+  alias Plug.Cowboy
 
   def loop do
     loop()
@@ -28,7 +27,7 @@ defmodule Farseer.Server do
     options = [strategy: :one_for_one, name: Farseer.Supervisor]
 
     Supervisor.start_link(Farseer.Server.children(), options)
-    Logger.info("Farseer started!")
+    Log.server_start(Farseer.Server.port())
 
     Farseer.Server.loop()
   end
