@@ -67,11 +67,10 @@ defmodule Farseer.Yaml do
   end
 
   def load(path) do
-    # should be
-    # path |> read |> has_farseer |> has_endpoints
-    yaml = Yaml.read(path)
-    Yaml.has_farseer(yaml)
-    Yaml.has_endpoints(yaml)
-    yaml
+    path
+    |> Yaml.read()
+    |> Yaml.has_farseer()
+    |> Yaml.check_version()
+    |> Yaml.has_endpoints()
   end
 end
