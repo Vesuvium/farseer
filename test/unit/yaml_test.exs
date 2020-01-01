@@ -47,7 +47,8 @@ defmodule FarseerTest.Yaml do
   end
 
   test "has_farseer/1" do
-    assert Yaml.has_farseer(%{"farseer" => 1}) == nil
+    yaml = %{"farseer" => 1}
+    assert Yaml.has_farseer(yaml) == yaml
   end
 
   test "has_farseer/1 without farseer" do
