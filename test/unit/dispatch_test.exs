@@ -19,10 +19,10 @@ defmodule FarseerTest.Dispatch do
   end
 
   test "call a matched routed", %{conn: conn} do
-    dummy Http, ["handle/2"] do
-      :ets.insert(:farseer_test, {"/", "GET", "to"})
+    dummy Http, ["handle/3"] do
+      :ets.insert(:farseer_test, {"/", "GET", "path_rules", "method_rules"})
       Dispatch.call(conn, :farseer_test)
-      assert called(Http.handle(conn, "to"))
+      assert called(Http.handle(conn, "path_rules", "method_rules"))
     end
   end
 
