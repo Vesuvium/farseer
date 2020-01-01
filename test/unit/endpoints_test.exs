@@ -30,6 +30,16 @@ defmodule FarseerTest.Endpoints do
     assert Endpoints.method_name(%{"get" => %{}}) == "GET"
   end
 
+  test "register_methods/4" do
+    :ets.new(:farseer_test, [:set, :protected, :named_table])
+
+    dummy Endpoints, [{"method_name", :method_name}] do
+      Endpoints.register_methods(:farseer_test, "/", ["get"], :options)
+      assert called(Endpoints.method_name("get"))
+      assert :ets.lookup(:farseer_test, "/") == [{"/", :method_name, :options}]
+    end
+  end
+
   test "register/3" do
     rules = %{"methods" => ["get"], "to" => :to}
 
