@@ -56,8 +56,8 @@ defmodule Farseer.Handlers.Http do
     |> Tesla.get!(headers: headers)
   end
 
-  def handle(conn, to) do
-    response = Http.send(conn, to)
+  def handle(conn, path_rules, method_rules) do
+    response = Http.send(conn, path_rules, method_rules)
 
     conn
     |> Headers.add_to_conn(response.headers)
