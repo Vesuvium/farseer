@@ -63,6 +63,25 @@ defmodule FarseerTest.Yaml do
     end
   end
 
+  test "check_version/1" do
+    yaml = %{"farseer" => "0.3"}
+    assert Yaml.check_version(yaml) == yaml
+  end
+
+  test "check_version/1 with ansupported version" do
+    yaml = %{"farseer" => "0"}
+    version = Application.spec(:farseer, :vsn)
+    message = "Farseer #{version} does not support configuration version 0"
+
+    dummy System, ["halt"] do
+      dummy IO, ["puts"] do
+        Yaml.check_version(yaml)
+        assert called(IO.puts(message))
+        assert called(System.halt(1))
+      end
+    end
+  end
+
   test "Yaml.load/1" do
     dummy Yaml, ["read", "has_farseer", "has_endpoints"] do
       assert Yaml.load("path") == "path"
