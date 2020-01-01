@@ -39,6 +39,13 @@ defmodule Farseer.Handlers.Http do
     |> Conn.send_resp(status, body)
   end
 
+  @doc """
+  Converts the request method to a Tesla method atom, e.g "GET" => :get!
+  """
+  def method(conn) do
+    (String.downcase(conn.method) <> "!") |> String.to_atom()
+  end
+
   def send(conn, options) do
     headers =
       conn.req_headers
