@@ -22,6 +22,14 @@ defmodule FarseerTest.Endpoints do
     end
   end
 
+  test "method_name/1" do
+    assert Endpoints.method_name("get") == "GET"
+  end
+
+  test "method_name/1 with a map" do
+    assert Endpoints.method_name(%{"get" => %{}}) == "GET"
+  end
+
   test "register/3" do
     dummy Endpoints, [{"options", :options}] do
       :ets.new(:farseer_test, [:set, :protected, :named_table])

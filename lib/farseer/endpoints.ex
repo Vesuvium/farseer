@@ -28,6 +28,17 @@ defmodule Farseer.Endpoints do
   end
 
   @doc """
+  Finds the method name to store in the ets table.
+  """
+  def method_name(method) do
+    if is_binary(method) do
+      method |> String.upcase()
+    else
+      method |> Map.keys() |> List.first() |> String.upcase()
+    end
+  end
+
+  @doc """
   Registers paths with the corresponding rules.
   """
   def register(table, path, rules) do
