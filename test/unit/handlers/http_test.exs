@@ -42,6 +42,10 @@ defmodule FarseerTest.Handlers.Http do
     end
   end
 
+  test "method/1" do
+    assert Http.method(%{method: "GET"}) == :get!
+  end
+
   test "sending a request" do
     dummy Tesla, ["get!/2"] do
       dummy Headers, [{"filter", :headers}, {"add", fn _a, _b -> :add end}] do
