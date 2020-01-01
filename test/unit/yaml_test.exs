@@ -4,7 +4,7 @@ defmodule FarseerTest.Yaml do
 
   alias Farseer.Yaml
 
-  test "the read function" do
+  test "read/1" do
     dummy YamlElixir, [{"read_from_file", {:ok, "data"}}] do
       yaml = Yaml.read("path")
       assert called(YamlElixir.read_from_file("path"))
@@ -12,7 +12,7 @@ defmodule FarseerTest.Yaml do
     end
   end
 
-  test "the read function when the file is not found" do
+  test "read/1 when the file is not found" do
     dummy System, ["halt"] do
       dummy IO, ["puts"] do
         Yaml.read("path")
@@ -22,18 +22,18 @@ defmodule FarseerTest.Yaml do
     end
   end
 
-  test "Farseer.read/0" do
+  test "read/0" do
     dummy YamlElixir, [{"read_from_file", {:ok, "data"}}] do
       Yaml.read()
       assert called(YamlElixir.read_from_file("farseer.yml"))
     end
   end
 
-  test "the has_endpoints function" do
+  test "has_endpoints/1" do
     assert Yaml.has_endpoints(%{"endpoints" => true}) == nil
   end
 
-  test "the has_endpoints function without endpoints" do
+  test "has_endpoints/1 without endpoints" do
     message = "No endpoints found in the configuration"
 
     dummy System, ["halt"] do
@@ -45,11 +45,11 @@ defmodule FarseerTest.Yaml do
     end
   end
 
-  test "the has_farseer function" do
+  test "has_farseer/1" do
     assert Yaml.has_farseer(%{"farseer" => 1}) == nil
   end
 
-  test "the has_farseer function without farseer" do
+  test "has_farseer/1 without farseer" do
     message = "No farseer version specified in the configuration"
 
     dummy System, ["halt"] do
