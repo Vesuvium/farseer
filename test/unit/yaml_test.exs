@@ -83,10 +83,11 @@ defmodule FarseerTest.Yaml do
   end
 
   test "Yaml.load/1" do
-    dummy Yaml, ["read", "has_farseer", "has_endpoints"] do
+    dummy Yaml, ["read", "has_farseer", "check_version", "has_endpoints"] do
       assert Yaml.load("path") == "path"
       assert called(Yaml.read("path"))
       assert called(Yaml.has_farseer("path"))
+      assert called(Yaml.check_version("path"))
       assert called(Yaml.has_endpoints("path"))
     end
   end
