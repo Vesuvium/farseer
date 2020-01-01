@@ -43,12 +43,13 @@ defmodule FarseerTest.Endpoints do
   test "register/3" do
     rules = %{"methods" => ["get"], "to" => :to}
 
-    dummy Endpoints, [{"options", :options}, {"method_name", :method}] do
-      :ets.new(:farseer_test, [:set, :protected, :named_table])
-      Endpoints.register(:farseer_test, "/", rules)
+    dummy Endpoints, [
+      {"options", :options},
+      {"register_methods", fn _a, _b, _c, _d -> :methods end}
+    ] do
+      assert Endpoints.register(:table, "/", rules) == :methods
       assert called(Endpoints.options(rules))
-      assert called(Endpoints.method_name("get"))
-      assert :ets.lookup(:farseer_test, "/") == [{"/", :method, :options}]
+      assert called(Endpoints.register_methods(:table, "/", ["get"], :options))
     end
   end
 

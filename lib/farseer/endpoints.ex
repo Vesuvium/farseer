@@ -51,12 +51,7 @@ defmodule Farseer.Endpoints do
     options = Endpoints.options(rules)
 
     if Map.has_key?(rules, "methods") do
-      Enum.each(rules["methods"], fn method ->
-        :ets.insert(
-          table,
-          {path, Endpoints.method_name(method), options}
-        )
-      end)
+      Endpoints.register_methods(table, path, rules["methods"], options)
     else
       :ets.insert(table, {path, "GET", options})
     end
