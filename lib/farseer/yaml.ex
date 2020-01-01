@@ -2,6 +2,8 @@ defmodule Farseer.Yaml do
   @moduledoc """
   Wrapper for YamlElixir, responsible for getting the yaml and validating it.
   """
+  @supported ["0.3", "0.3.0"]
+
   alias Farseer.Yaml
 
   @doc """
@@ -43,6 +45,24 @@ defmodule Farseer.Yaml do
       System.halt(1)
     else
       yaml
+    end
+  end
+
+  def check_version(yaml) do
+    config_version = Map.get(yaml, "farseer")
+
+    if Enum.member?(@supported, config_version) do
+      yaml
+    else
+      version = Application.spec(:farseer, :vsn)
+
+      message =
+        "Farseer #{version} does not support configuration version #{
+          config_version
+        }"
+
+      IO.puts(message)
+      System.halt(1)
     end
   end
 
