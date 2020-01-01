@@ -3,11 +3,15 @@ defmodule Farseer.Endpoints do
   Responsible for loading the yml file and making the needed transformations
   so that the endpoints map works with Plug.match
   """
+  alias Farseer.Endpoints
   alias Farseer.Yaml
 
   @options_list ["to", "request_headers"]
 
-  def endpoints do
+  @doc """
+  Get the endpoints from the yaml file.
+  """
+  def endpoints() do
     Confex.get_env(:farseer, :yaml_file)
     |> Yaml.load()
     |> Map.get("endpoints")
@@ -23,27 +27,33 @@ defmodule Farseer.Endpoints do
     end)
   end
 
-  def register(table, endpoint) do
-    options = Farseer.Endpoints.options(endpoint)
+  @doc """
+  Registers paths with the corresponding rules.
+  """
+  def register(table, path, rules) do
+    options = Endpoints.options(rules)
 
-    if Map.has_key?(endpoint, "methods") do
-      Enum.each(endpoint["methods"], fn method ->
+    if Map.has_key?(rules, "methods") do
+      Enum.each(rules["methods"], fn method ->
         :ets.insert(
           table,
-          {endpoint["path"], String.upcase(method), options}
+          {path, String.upcase(method), options}
         )
       end)
     else
-      :ets.insert(table, {endpoint["path"], "GET", options})
+      :ets.insert(table, {path, "GET", options})
     end
   end
 
-  def init do
+  @doc """
+  Inits the ets table and registers and all paths.
+  """
+  def init() do
     table = Confex.get_env(:farseer, :table)
     :ets.new(table, [:set, :protected, :named_table])
 
-    Enum.each(Farseer.Endpoints.endpoints(), fn {_name, endpoint} ->
-      Farseer.Endpoints.register(table, endpoint)
+    Enum.each(Endpoints.endpoints(), fn {path, rules} ->
+      Endpoints.register(table, path, rules)
     end)
   end
 end
