@@ -48,7 +48,7 @@ defmodule Farseer.Endpoints do
       Enum.each(rules["methods"], fn method ->
         :ets.insert(
           table,
-          {path, String.upcase(method), options}
+          {path, Endpoints.method_name(method), options}
         )
       end)
     else
