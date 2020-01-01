@@ -41,6 +41,8 @@ defmodule Farseer.Yaml do
     unless Map.has_key?(yaml, "farseer") do
       IO.puts("No farseer version specified in the configuration")
       System.halt(1)
+    else
+      yaml
     end
   end
 
