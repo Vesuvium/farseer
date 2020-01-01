@@ -30,7 +30,8 @@ defmodule FarseerTest.Yaml do
   end
 
   test "has_endpoints/1" do
-    assert Yaml.has_endpoints(%{"endpoints" => true}) == nil
+    yaml = %{"endpoints" => true}
+    assert Yaml.has_endpoints(yaml) == yaml
   end
 
   test "has_endpoints/1 without endpoints" do

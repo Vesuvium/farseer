@@ -29,6 +29,8 @@ defmodule Farseer.Yaml do
     unless Map.has_key?(yaml, "endpoints") do
       IO.puts("No endpoints found in the configuration")
       System.halt(1)
+    else
+      yaml
     end
   end
 
