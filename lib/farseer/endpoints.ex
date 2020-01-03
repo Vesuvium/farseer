@@ -44,9 +44,11 @@ defmodule Farseer.Endpoints do
     end
   end
 
-  def register_methods(table, path, methods, options) do
+  def register_methods(table, path, path_rules, methods) do
     Enum.each(methods, fn method ->
-      :ets.insert(table, {path, Endpoints.method_name(method), options})
+      method_name = Endpoints.method_name(method)
+      method_rules = Endpoints.method_rules(method, method_name)
+      :ets.insert(table, {path, method_name, path_rules, method_rules})
     end)
   end
 
