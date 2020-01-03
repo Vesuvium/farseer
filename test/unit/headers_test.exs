@@ -44,4 +44,14 @@ defmodule FarseerTest.Headers do
       assert result == :conn
     end
   end
+
+  test "process/2" do
+    path_rules = %{"request_headers" => "rh"}
+
+    dummy Headers, [{"filter", :filter}, {"add", fn _a, _b -> :add end}] do
+      assert Headers.process(%{:req_headers => :headers}, path_rules) == :add
+      assert called(Headers.filter(:headers))
+      assert called(Headers.add(:filter, "rh"))
+    end
+  end
 end

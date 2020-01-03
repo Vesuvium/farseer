@@ -40,4 +40,10 @@ defmodule Farseer.Headers do
       Conn.put_resp_header(acc, key, value)
     end)
   end
+
+  def process(conn, path_rules) do
+    conn.req_headers
+    |> Headers.filter()
+    |> Headers.add(path_rules["request_headers"])
+  end
 end
