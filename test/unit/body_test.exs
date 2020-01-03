@@ -29,6 +29,24 @@ defmodule FarseerTest.Body do
     end
   end
 
+  test "encode/2 with json" do
+    content_type = ["application/json"]
+
+    dummy Jason, [{"encode!", :encode}] do
+      assert Body.encode("string", content_type) == :encode
+      assert called(Jason.encode!("string"))
+    end
+  end
+
+  test "encode/2 with urlencoded" do
+    content_type = ["application/x-www-form-urlencoded"]
+
+    dummy Query, [{"encode", :encode}] do
+      assert Body.encode("string", content_type) == :encode
+      assert called(Query.encode("string"))
+    end
+  end
+
   test "process/2 with conn, nil" do
     dummy Conn, [{"read_body", {:ok, :body}}] do
       assert Body.process(:conn, nil) == :body
