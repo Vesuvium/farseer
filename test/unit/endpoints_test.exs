@@ -41,10 +41,17 @@ defmodule FarseerTest.Endpoints do
   test "register_methods/4" do
     :ets.new(:farseer_test, [:set, :protected, :named_table])
 
-    dummy Endpoints, [{"method_name", :method_name}] do
-      Endpoints.register_methods(:farseer_test, "/", ["get"], :options)
+    dummy Endpoints, [
+      {"method_name", :method_name},
+      {"method_rules", fn _a, _b -> :method_rules end}
+    ] do
+      Endpoints.register_methods(:farseer_test, "/", :path_rules, ["get"])
       assert called(Endpoints.method_name("get"))
-      assert :ets.lookup(:farseer_test, "/") == [{"/", :method_name, :options}]
+      assert called(Endpoints.method_rules("get", :method_name))
+
+      assert :ets.lookup(:farseer_test, "/") == [
+               {"/", :method_name, :path_rules, :method_rules}
+             ]
     end
   end
 
@@ -57,7 +64,7 @@ defmodule FarseerTest.Endpoints do
     ] do
       assert Endpoints.register(:table, "/", rules) == :methods
       assert called(Endpoints.options(rules))
-      assert called(Endpoints.register_methods(:table, "/", ["get"], :options))
+      assert called(Endpoints.register_methods(:table, "/", :options, ["get"]))
     end
   end
 
