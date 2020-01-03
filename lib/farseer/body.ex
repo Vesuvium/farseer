@@ -29,9 +29,13 @@ defmodule Farseer.Body do
     Conn.read_body(conn) |> elem(1)
   end
 
-  def process(conn, _method_rules) do
+  def process(conn, method_rules) do
+    content_type = Conn.get_req_header(conn, "content-type")
+
     conn
     |> Conn.read_body()
-    |> Body.read(Conn.get_req_header(conn, "content-type"))
+    |> Body.read(content_type)
+    |> Body.add(method_rules["request_body"])
+    |> Body.encode(content_type)
   end
 end
