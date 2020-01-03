@@ -56,14 +56,20 @@ defmodule FarseerTest.Body do
 
   test "process/2" do
     dummy Conn, [
-      {"read_body", :body},
-      {"get_req_header", fn _a, _b -> :header end}
+      {"read_body", {:ok, "body", "conn"}},
+      {"get_req_header", fn _a, _b -> ["header"] end}
     ] do
-      dummy Body, [{"read", fn _a, _b -> :read end}] do
-        assert Body.process(:conn, :rules) == :read
+      dummy Body, [
+        {"read", fn {:ok, _a, _b}, _c -> {:conn, :body} end},
+        {"add", fn {_a, _b}, _c -> :add end},
+        {"encode", fn _a, [_b] -> :encode end}
+      ] do
+        assert Body.process(:conn, %{"request_body" => "rb"}) == :encode
         assert called(Conn.read_body(:conn))
         assert called(Conn.get_req_header(:conn, "content-type"))
-        assert called(Body.read(:body, :header))
+        assert called(Body.read({:ok, "body", "conn"}, ["header"]))
+        assert called(Body.add({:conn, :body}, "rb"))
+        assert called(Body.encode(:add, ["header"]))
       end
     end
   end
