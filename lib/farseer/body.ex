@@ -17,6 +17,12 @@ defmodule Farseer.Body do
     {conn, Query.decode(body)}
   end
 
+  def encode(string, ["application/json"]) do
+    Jason.encode!(string)
+  end
+
+  def encode(string, ["application/x-www-form-urlencoded"]) do
+    Query.encode(string)
   end
 
   def process(conn, nil) do
