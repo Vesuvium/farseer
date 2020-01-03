@@ -65,7 +65,7 @@ defmodule FarseerTest.Endpoints do
     dummy Endpoints, [{"options", :options}] do
       :ets.new(:farseer_test, [:set, :protected, :named_table])
       Endpoints.register(:farseer_test, "/", %{"to" => :to})
-      assert :ets.lookup(:farseer_test, "/") == [{"/", "GET", :options}]
+      assert :ets.lookup(:farseer_test, "/") == [{"/", "GET", :options, nil}]
     end
   end
 
