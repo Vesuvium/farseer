@@ -2,6 +2,7 @@ defmodule Farseer.Handlers.Http do
   @moduledoc """
   Generic HTTP handler. This is also the default handler.
   """
+  alias Farseer.Body
   alias Farseer.Handlers.Http
   alias Farseer.Headers
   alias Plug.Conn
@@ -46,14 +47,10 @@ defmodule Farseer.Handlers.Http do
     (String.downcase(conn.method) <> "!") |> String.to_atom()
   end
 
-  def send(conn, options) do
-    headers =
-      conn.req_headers
-      |> Headers.filter()
-      |> Headers.add(options["request_headers"])
-
-    options["to"]
-    |> Tesla.get!(headers: headers)
+  def send(conn, path_rules, method_rules) do
+    headers = Headers.process(conn, path_rules)
+    body = Body.process(conn, method_rules)
+    Tesla.get!(path_rules["to"], headers: headers)
   end
 
   def handle(conn, path_rules, method_rules) do
