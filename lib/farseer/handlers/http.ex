@@ -47,24 +47,24 @@ defmodule Farseer.Handlers.Http do
     (String.downcase(conn.method) <> "!") |> String.to_atom()
   end
 
+  def send(%{method: "GET"} = conn, path_rules, _method_rules) do
+    headers = Headers.process(conn, path_rules)
+    Tesla.get!(path_rules["to"], headers: headers)
+  end
+
+  def send(%{method: "DELETE"} = conn, path_rules, _method_rules) do
+    headers = Headers.process(conn, path_rules)
+    Tesla.delete!(path_rules["to"], headers: headers)
+  end
+
+  @doc """
+  Sends the request to the configured target.
+  """
   def send(conn, path_rules, method_rules) do
     headers = Headers.process(conn, path_rules)
     body = Body.process(conn, method_rules)
 
-    cond do
-      conn.method == "GET" ->
-        Tesla.get!(path_rules["to"], headers: headers)
-
-      conn.method == "DELETE" ->
-        Tesla.delete!(path_rules["to"], headers: headers)
-
-      true ->
-        apply(Tesla, Http.method(conn), [
-          path_rules["to"],
-          body,
-          [headers: headers]
-        ])
-    end
+    apply(Tesla, Http.method(conn), [path_rules["to"], body, [headers: headers]])
   end
 
   def handle(conn, path_rules, method_rules) do
