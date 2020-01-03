@@ -6,6 +6,11 @@ defmodule FarseerTest.Body do
   alias Plug.Conn
   alias Plug.Conn.Query
 
+  test "add/2" do
+    result = Body.add({:conn, %{"fields" => :f}}, [%{"extra" => :e}])
+    assert result == %{"fields" => :f, "extra" => :e}
+  end
+
   test "read/2 with json" do
     dummy Jason, ["decode!"] do
       assert Body.read({:ok, :body, :conn}, ["application/json"]) == :body
