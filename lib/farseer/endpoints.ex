@@ -38,6 +38,12 @@ defmodule Farseer.Endpoints do
     end
   end
 
+  def method_rules(method, method_name) do
+    if is_map(method) do
+      method[String.downcase(method_name)]
+    end
+  end
+
   def register_methods(table, path, methods, options) do
     Enum.each(methods, fn method ->
       :ets.insert(table, {path, Endpoints.method_name(method), options})
