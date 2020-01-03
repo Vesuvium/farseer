@@ -2,6 +2,7 @@ defmodule FarseerTest.Handlers.Http do
   use ExUnit.Case
   import Dummy
 
+  alias Farseer.Body
   alias Farseer.Handlers.Http
   alias Farseer.Headers
   alias Plug.Conn
@@ -46,14 +47,19 @@ defmodule FarseerTest.Handlers.Http do
     assert Http.method(%{method: "GET"}) == :get!
   end
 
-  test "sending a request" do
+  test "send/3" do
+    conn = %{:method => "GET"}
+    path_rules = %{"to" => :to, "request_headers" => "request_headers"}
+    method_rules = %{}
+
     dummy Tesla, ["get!/2"] do
-      dummy Headers, [{"filter", :headers}, {"add", fn _a, _b -> :add end}] do
-        options = %{"to" => :to, "request_headers" => "request_headers"}
-        Http.send(%{:req_headers => :req_headers}, options)
-        assert called(Headers.filter(:req_headers))
-        assert called(Headers.add(:headers, "request_headers"))
-        assert called(Tesla.get!(:to, headers: :add))
+      dummy Headers, [{"process", fn _a, _b -> :headers end}] do
+        dummy Body, [{"process", fn _a, _b -> :body end}] do
+          Http.send(conn, path_rules, method_rules)
+          assert called(Headers.process(conn, path_rules))
+          assert called(Body.process(conn, method_rules))
+          assert called(Tesla.get!(:to, headers: :headers))
+        end
       end
     end
   end
