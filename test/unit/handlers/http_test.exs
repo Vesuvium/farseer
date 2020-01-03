@@ -54,12 +54,9 @@ defmodule FarseerTest.Handlers.Http do
 
     dummy Tesla, ["get!/2"] do
       dummy Headers, [{"process", fn _a, _b -> :headers end}] do
-        dummy Body, [{"process", fn _a, _b -> :body end}] do
-          Http.send(conn, path_rules, method_rules)
-          assert called(Headers.process(conn, path_rules))
-          assert called(Body.process(conn, method_rules))
-          assert called(Tesla.get!(:to, headers: :headers))
-        end
+        Http.send(conn, path_rules, method_rules)
+        assert called(Headers.process(conn, path_rules))
+        assert called(Tesla.get!(:to, headers: :headers))
       end
     end
   end
@@ -71,10 +68,9 @@ defmodule FarseerTest.Handlers.Http do
 
     dummy Tesla, ["delete!/2"] do
       dummy Headers, [{"process", fn _a, _b -> :headers end}] do
-        dummy Body, [{"process", fn _a, _b -> :body end}] do
-          Http.send(conn, path_rules, method_rules)
-          assert called(Tesla.delete!(:to, headers: :headers))
-        end
+        Http.send(conn, path_rules, method_rules)
+        assert called(Headers.process(conn, path_rules))
+        assert called(Tesla.delete!(:to, headers: :headers))
       end
     end
   end
@@ -88,6 +84,8 @@ defmodule FarseerTest.Handlers.Http do
       dummy Headers, [{"process", fn _a, _b -> :headers end}] do
         dummy Body, [{"process", fn _a, _b -> :body end}] do
           Http.send(conn, path_rules, method_rules)
+          assert called(Body.process(conn, method_rules))
+          assert called(Headers.process(conn, path_rules))
           assert called(Tesla.post!(:to, :body, headers: :headers))
         end
       end
