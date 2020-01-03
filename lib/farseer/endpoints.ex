@@ -30,12 +30,12 @@ defmodule Farseer.Endpoints do
   @doc """
   Finds the method name to store in the ets table.
   """
+  def method_name(method) when is_map(method) do
+    method |> Map.keys() |> List.first() |> String.upcase()
+  end
+
   def method_name(method) do
-    if is_binary(method) do
-      method |> String.upcase()
-    else
-      method |> Map.keys() |> List.first() |> String.upcase()
-    end
+    String.upcase(method)
   end
 
   def method_rules(method, method_name) do
