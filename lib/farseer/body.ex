@@ -9,12 +9,14 @@ defmodule Farseer.Body do
     end)
   end
 
-  def read({:ok, body, _conn}, ["application/json"]) do
-    Jason.decode!(body)
+  def read({:ok, body, conn}, ["application/json"]) do
+    {conn, Jason.decode!(body)}
   end
 
-  def read({:ok, body, _conn}, ["application/x-www-form-urlencoded"]) do
-    Query.decode(body)
+  def read({:ok, body, conn}, ["application/x-www-form-urlencoded"]) do
+    {conn, Query.decode(body)}
+  end
+
   end
 
   def process(conn, nil) do

@@ -12,8 +12,10 @@ defmodule FarseerTest.Body do
   end
 
   test "read/2 with json" do
+    content_type = ["application/json"]
+
     dummy Jason, ["decode!"] do
-      assert Body.read({:ok, :body, :conn}, ["application/json"]) == :body
+      assert Body.read({:ok, :body, :conn}, content_type) == {:conn, :body}
       assert called(Jason.decode!(:body))
     end
   end
@@ -22,7 +24,7 @@ defmodule FarseerTest.Body do
     content_type = ["application/x-www-form-urlencoded"]
 
     dummy Query, ["decode"] do
-      assert Body.read({:ok, :body, :conn}, content_type) == :body
+      assert Body.read({:ok, :body, :conn}, content_type) == {:conn, :body}
       assert called(Query.decode(:body))
     end
   end
