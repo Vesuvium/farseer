@@ -1,6 +1,12 @@
-farseer: 0.3
+farseer: "0.3"
 endpoints:
     /test:
         methods:
             - get
-        to: "https://example.com"
+        to: https://example.com
+    /hello:
+        methods:
+            - get
+        request_headers:
+            x-clacks-overhead: GNU Terry Pratchett
+        to: https://en.wikipedia.org/w/api.php?action=parse&title=Terry_Pratchett&format=json
