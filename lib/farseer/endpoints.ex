@@ -4,6 +4,7 @@ defmodule Farseer.Endpoints do
   so that the endpoints map works with Plug.match
   """
   alias Farseer.Endpoints
+  alias Farseer.Ets
   alias Farseer.Yaml
 
   @options_list ["to", "request_headers"]
@@ -44,24 +45,24 @@ defmodule Farseer.Endpoints do
     end
   end
 
-  def register_methods(table, path, path_rules, methods) do
+  def register_methods(path, path_rules, methods) do
     Enum.each(methods, fn method ->
       method_name = Endpoints.method_name(method)
       method_rules = Endpoints.method_rules(method, method_name)
-      :ets.insert(table, {path, method_name, path_rules, method_rules})
+      Ets.insert(method_name, path, path_rules, method_rules)
     end)
   end
 
   @doc """
   Registers paths with the corresponding rules.
   """
-  def register(table, path, rules) do
+  def register(path, rules) do
     path_rules = Endpoints.options(rules)
 
     if Map.has_key?(rules, "methods") do
-      Endpoints.register_methods(table, path, path_rules, rules["methods"])
+      Endpoints.register_methods(path, path_rules, rules["methods"])
     else
-      :ets.insert(table, {path, "GET", path_rules, nil})
+      Ets.insert("GET", path, path_rules, nil)
     end
   end
 
@@ -69,11 +70,10 @@ defmodule Farseer.Endpoints do
   Inits the ets table and registers and all paths.
   """
   def init() do
-    table = Confex.get_env(:farseer, :table)
-    :ets.new(table, [:set, :protected, :named_table])
+    Ets.create_table()
 
     Enum.each(Endpoints.endpoints(), fn {path, rules} ->
-      Endpoints.register(table, path, rules)
+      Endpoints.register(path, rules)
     end)
   end
 end
