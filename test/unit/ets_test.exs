@@ -11,12 +11,13 @@ defmodule FarseerTest.Ets do
     end
   end
 
-  test "id/2 with an id" do
-    assert Ets.id("GET", {"GET", "", "hello"}) == {"GET", "", "hello"}
-  end
-
   test "id/2" do
     assert Ets.id("GET", "/hello") == {"GET", "", "hello"}
+  end
+
+  test "templated_id/1" do
+    result = Ets.templated_id({"GET", "", "hello", "1"})
+    assert result == {"GET", "", "hello", :"$1"}
   end
 
   test "insert/4" do
@@ -44,6 +45,22 @@ defmodule FarseerTest.Ets do
 
     dummy Ets, [{"table", fn -> :test end}, {"id", fn _a, _b -> id end}] do
       assert Ets.match("GET", "/world") == [{id, :path_rules, :method_rules}]
+    end
+  end
+
+  test "match/2 with a path fragment" do
+    id = {"GET", "", "/world", "{{id}}"}
+    template = {"GET", "", "/world", :"$1"}
+    path = {"GET", "", "/world", "1"}
+    :ets.new(:test, [:set, :protected, :named_table])
+    :ets.insert(:test, {id, :path_rules, :method_rules})
+
+    dummy Ets, [
+      {"table", fn -> :test end},
+      {"id", fn _a, _b -> path end},
+      {"templated_id", template}
+    ] do
+      assert Ets.match("GET", "/world/1") == [{id, :path_rules, :method_rules}]
     end
   end
 end

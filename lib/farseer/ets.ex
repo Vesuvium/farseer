@@ -12,14 +12,22 @@ defmodule Farseer.Ets do
 
   @doc """
   The id of an entry is [method, path fragments]. For example,
-  GET "/hello/world" will be ["GET", "", "hello", "world"]
+  GET "/hello/world" will be {"GET", "", "hello", "world"}
   """
-  def id(method, id) when is_tuple(id) do
-    id
-  end
-
   def id(method, path) do
     [method | String.split(path, "/")] |> List.to_tuple()
+  end
+
+  @doc """
+  Transforms an id into a templated id, e.g. {"GET", "", "hello", "1"} to
+  {"GET", "", "hello", :"$1"}, so that it can match
+  {"GET", "", "hello", "{{id}}"}
+  """
+  def templated_id(id) do
+    id
+    |> Tuple.to_list()
+    |> List.replace_at(tuple_size(id) - 1, :"$1")
+    |> List.to_tuple()
   end
 
   def insert(method, path, path_rules, method_rules) do
@@ -37,6 +45,14 @@ defmodule Farseer.Ets do
   Matches a given method and path.
   """
   def match(method, path) do
-    :ets.lookup(Ets.table(), Ets.id(method, path))
+    id = Ets.id(method, path)
+    table = Ets.table()
+    result = :ets.lookup(table, id)
+
+    if result == [] do
+      :ets.match_object(table, {Ets.templated_id(id), :"$2", :"$3"})
+    else
+      result
+    end
   end
 end
