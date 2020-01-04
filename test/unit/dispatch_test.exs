@@ -3,33 +3,35 @@ defmodule FarseerTest.Dispatch do
   import Dummy
 
   alias Farseer.Dispatch
+  alias Farseer.Ets
   alias Farseer.Handlers.Http
 
-  defmodule Conn do
-    defstruct request_path: "/", method: "GET"
-  end
-
-  setup do
-    :ets.new(:farseer_test, [:set, :protected, :named_table])
-    {:ok, conn: %Conn{}}
-  end
-
-  test "the init function" do
+  test "init/1" do
     assert Dispatch.init("table") == "table"
   end
 
-  test "call a matched routed", %{conn: conn} do
+  test "call/2" do
+    conn = %{method: :method, request_path: :path}
+
     dummy Http, ["handle/3"] do
-      :ets.insert(:farseer_test, {"/", "GET", "path_rules", "method_rules"})
-      Dispatch.call(conn, :farseer_test)
-      assert called(Http.handle(conn, "path_rules", "method_rules"))
+      dummy Ets, [
+        {"match", fn _a, _b -> [{:path, :path_rules, :method_rules}] end}
+      ] do
+        Dispatch.call(conn, :table)
+        assert called(Ets.match(:method, :path))
+        assert called(Http.handle(conn, :path_rules, :method_rules))
+      end
     end
   end
 
-  test "call an unmatched route", %{conn: conn} do
+  test "call an unmatched route" do
+    conn = %{method: :method, request_path: :path}
+
     dummy Http, ["not_found"] do
-      Dispatch.call(conn, :farseer_test)
-      assert called(Http.not_found(conn))
+      dummy Ets, [{"match", fn _a, _b -> [] end}] do
+        Dispatch.call(conn, :table)
+        assert called(Http.not_found(conn))
+      end
     end
   end
 end
