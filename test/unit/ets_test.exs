@@ -11,6 +11,10 @@ defmodule FarseerTest.Ets do
     end
   end
 
+  test "id/2 with an id" do
+    assert Ets.id("GET", {"GET", "", "hello"}) == {"GET", "", "hello"}
+  end
+
   test "id/2" do
     assert Ets.id("GET", "/hello") == {"GET", "", "hello"}
   end

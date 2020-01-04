@@ -14,6 +14,10 @@ defmodule Farseer.Ets do
   The id of an entry is [method, path fragments]. For example,
   GET "/hello/world" will be ["GET", "", "hello", "world"]
   """
+  def id(method, id) when is_tuple(id) do
+    id
+  end
+
   def id(method, path) do
     [method | String.split(path, "/")] |> List.to_tuple()
   end
