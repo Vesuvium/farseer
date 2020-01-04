@@ -3,6 +3,7 @@ defmodule FarseerTest.Endpoints do
   import Dummy
 
   alias Farseer.Endpoints
+  alias Farseer.Ets
   alias Farseer.Yaml
 
   test "options/1" do
@@ -38,53 +39,50 @@ defmodule FarseerTest.Endpoints do
     assert Endpoints.method_rules(%{"get" => :get}, "GET") == :get
   end
 
-  test "register_methods/4" do
-    :ets.new(:farseer_test, [:set, :protected, :named_table])
-
-    dummy Endpoints, [
-      {"method_name", :method_name},
-      {"method_rules", fn _a, _b -> :method_rules end}
-    ] do
-      Endpoints.register_methods(:farseer_test, "/", :path_rules, ["get"])
-      assert called(Endpoints.method_name("get"))
-      assert called(Endpoints.method_rules("get", :method_name))
-
-      assert :ets.lookup(:farseer_test, "/") == [
-               {"/", :method_name, :path_rules, :method_rules}
-             ]
+  test "register_methods/3" do
+    dummy Ets, [{"insert", fn _a, _b, _c, _d -> :insert end}] do
+      dummy Endpoints, [
+        {"method_name", :method_name},
+        {"method_rules", fn _a, _b -> :method_rules end}
+      ] do
+        Endpoints.register_methods("/", :path_rules, ["get"])
+        assert called(Endpoints.method_name("get"))
+        assert called(Endpoints.method_rules("get", :method_name))
+      end
     end
   end
 
-  test "register/3" do
+  test "register/2" do
     rules = %{"methods" => ["get"], "to" => :to}
 
     dummy Endpoints, [
       {"options", :options},
-      {"register_methods", fn _a, _b, _c, _d -> :methods end}
+      {"register_methods", fn _a, _b, _c -> :methods end}
     ] do
-      assert Endpoints.register(:table, "/", rules) == :methods
+      assert Endpoints.register("/", rules) == :methods
       assert called(Endpoints.options(rules))
-      assert called(Endpoints.register_methods(:table, "/", :options, ["get"]))
+      assert called(Endpoints.register_methods("/", :options, ["get"]))
     end
   end
 
-  test "register/3 without methods" do
-    dummy Endpoints, [{"options", :options}] do
-      :ets.new(:farseer_test, [:set, :protected, :named_table])
-      Endpoints.register(:farseer_test, "/", %{"to" => :to})
-      assert :ets.lookup(:farseer_test, "/") == [{"/", "GET", :options, nil}]
+  test "register/2 without methods" do
+    dummy Ets, [{"insert", fn _a, _b, _c, _d -> :insert end}] do
+      dummy Endpoints, [{"options", :options}] do
+        assert Endpoints.register("/", %{"to" => :to}) == :insert
+        assert called(Ets.insert("GET", "/", :options, nil))
+      end
     end
   end
 
   test "init/0" do
-    dummy Confex, [{"get_env", fn _a, _b -> :farseer_test end}] do
+    dummy Ets, ["create_table/0"] do
       dummy Endpoints, [
         {"endpoints", fn -> [{:path, :rules}] end},
-        "register/3"
+        "register/2"
       ] do
         Endpoints.init()
-        assert called(Confex.get_env(:farseer, :table))
-        assert called(Endpoints.register(:farseer_test, :path, :rules))
+        assert called(Ets.create_table())
+        assert called(Endpoints.register(:path, :rules))
       end
     end
   end
