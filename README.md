@@ -37,16 +37,14 @@ farseer run --port 8000
 Simple configuration:
 
 ```yaml
-farseer: 1
+farseer: "0.3"
 endpoints:
-    test:
-        path: /test
+    /test:
         methods:
             - get
             - post
         to: "https://internalservice:3000"
-    login:
-        path: /login
+    /login:
         methods:
             - post
         to: "https://loginservice"
@@ -57,8 +55,7 @@ Specifying an handler:
 
 
 ```yaml
-login:
-    path: /upload
+/upload:
     methods:
         - post
     handler: "Farseer.Handlers.S3"
@@ -67,12 +64,13 @@ login:
 Transformations:
 
 ```yaml
-login:
-    path: /login
+/login:
     methods:
-        - post
+        - post:
+            request_body:
+                - extra_field: "value" # adds a field to the request body
         - patch:
-            headers:
+            request_headers:
                 - Bearer: "my token" # adds an header to the request
     transform:
         data:
@@ -87,11 +85,10 @@ login:
 Error handling:
 
 ```yaml
-login:
-    path: /login
+/login:
     methods:
         - post
-    to: "https://loginservice"
+    to: https://loginservice
     errors:
         - 500: 401 # transform 500 in 401
         - 414: # transform 414 in 401, with custom message
