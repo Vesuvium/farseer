@@ -4,7 +4,7 @@ defmodule Farseer.Dispatch do
 
   def init(table), do: table
 
-  def call(conn, table) do
+  def call(conn, _table) do
     case Ets.match(conn.method, conn.request_path) do
       [{_path, path_rules, method_rules}] ->
         Http.handle(conn, path_rules, method_rules)
