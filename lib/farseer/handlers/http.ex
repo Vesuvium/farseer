@@ -47,6 +47,11 @@ defmodule Farseer.Handlers.Http do
     (String.downcase(conn.method) <> "!") |> String.to_atom()
   end
 
+  def to(conn, to) do
+    fragment = String.split(conn.request_path, "/") |> List.last()
+    String.replace(to, "{id}", fragment)
+  end
+
   def send(%{method: "GET"} = conn, path_rules, _method_rules) do
     headers = Headers.process(conn, path_rules)
     Tesla.get!(path_rules["to"], headers: headers)

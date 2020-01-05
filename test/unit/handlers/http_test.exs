@@ -47,6 +47,14 @@ defmodule FarseerTest.Handlers.Http do
     assert Http.method(%{method: "GET"}) == :get!
   end
 
+  test "to/2" do
+    assert Http.to(%{request_path: "/path/1"}, "/to/{id}") == "/to/1"
+  end
+
+  test "to/2 with regular path" do
+    assert Http.to(%{request_path: "/path"}, "/to") == "/to"
+  end
+
   test "send/3 with GET" do
     conn = %{:method => "GET"}
     path_rules = %{"to" => :to, "request_headers" => "request_headers"}
