@@ -57,44 +57,53 @@ defmodule FarseerTest.Handlers.Http do
 
   test "send/3 with GET" do
     conn = %{:method => "GET"}
-    path_rules = %{"to" => :to, "request_headers" => "request_headers"}
+    path_rules = %{"to" => "path", "request_headers" => "request_headers"}
     method_rules = %{}
 
     dummy Tesla, ["get!/2"] do
       dummy Headers, [{"process", fn _a, _b -> :headers end}] do
-        Http.send(conn, path_rules, method_rules)
-        assert called(Headers.process(conn, path_rules))
-        assert called(Tesla.get!(:to, headers: :headers))
+        dummy Http, [{"to", fn _a, _b -> :to end}] do
+          Http.send(conn, path_rules, method_rules)
+          assert called(Headers.process(conn, path_rules))
+          assert called(Http.to(conn, "path"))
+          assert called(Tesla.get!(:to, headers: :headers))
+        end
       end
     end
   end
 
   test "send/3 with DELETE" do
     conn = %{:method => "DELETE"}
-    path_rules = %{"to" => :to, "request_headers" => "request_headers"}
+    path_rules = %{"to" => "path", "request_headers" => "request_headers"}
     method_rules = %{}
 
     dummy Tesla, ["delete!/2"] do
       dummy Headers, [{"process", fn _a, _b -> :headers end}] do
-        Http.send(conn, path_rules, method_rules)
-        assert called(Headers.process(conn, path_rules))
-        assert called(Tesla.delete!(:to, headers: :headers))
+        dummy Http, [{"to", fn _a, _b -> :to end}] do
+          Http.send(conn, path_rules, method_rules)
+          assert called(Headers.process(conn, path_rules))
+          assert called(Http.to(conn, "path"))
+          assert called(Tesla.delete!(:to, headers: :headers))
+        end
       end
     end
   end
 
   test "send/3" do
     conn = %{:method => "POST"}
-    path_rules = %{"to" => :to, "request_headers" => "request_headers"}
+    path_rules = %{"to" => "path", "request_headers" => "request_headers"}
     method_rules = %{}
 
     dummy Tesla, ["post!/3"] do
       dummy Headers, [{"process", fn _a, _b -> :headers end}] do
         dummy Body, [{"process", fn _a, _b -> :body end}] do
-          Http.send(conn, path_rules, method_rules)
-          assert called(Body.process(conn, method_rules))
-          assert called(Headers.process(conn, path_rules))
-          assert called(Tesla.post!(:to, :body, headers: :headers))
+          dummy Http, [{"to", fn _a, _b -> :to end}] do
+            Http.send(conn, path_rules, method_rules)
+            assert called(Body.process(conn, method_rules))
+            assert called(Headers.process(conn, path_rules))
+            assert called(Http.to(conn, "path"))
+            assert called(Tesla.post!(:to, :body, headers: :headers))
+          end
         end
       end
     end
