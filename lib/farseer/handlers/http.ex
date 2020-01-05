@@ -54,12 +54,12 @@ defmodule Farseer.Handlers.Http do
 
   def send(%{method: "GET"} = conn, path_rules, _method_rules) do
     headers = Headers.process(conn, path_rules)
-    Tesla.get!(path_rules["to"], headers: headers)
+    Tesla.get!(Http.to(conn, path_rules["to"]), headers: headers)
   end
 
   def send(%{method: "DELETE"} = conn, path_rules, _method_rules) do
     headers = Headers.process(conn, path_rules)
-    Tesla.delete!(path_rules["to"], headers: headers)
+    Tesla.delete!(Http.to(conn, path_rules["to"]), headers: headers)
   end
 
   @doc """
@@ -68,8 +68,8 @@ defmodule Farseer.Handlers.Http do
   def send(conn, path_rules, method_rules) do
     headers = Headers.process(conn, path_rules)
     body = Body.process(conn, method_rules)
-
-    apply(Tesla, Http.method(conn), [path_rules["to"], body, [headers: headers]])
+    to = Http.to(conn, path_rules["to"])
+    apply(Tesla, Http.method(conn), [to, body, [headers: headers]])
   end
 
   def handle(conn, path_rules, method_rules) do
