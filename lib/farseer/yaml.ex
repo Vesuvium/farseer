@@ -2,7 +2,7 @@ defmodule Farseer.Yaml do
   @moduledoc """
   Wrapper for YamlElixir, responsible for getting the yaml and validating it.
   """
-  @supported ["0.3", "0.3.0"]
+  @supported ["0.4", "0.4.0"]
 
   alias Farseer.Yaml
 
