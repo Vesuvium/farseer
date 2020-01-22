@@ -64,7 +64,7 @@ defmodule FarseerTest.Yaml do
   end
 
   test "check_version/1" do
-    yaml = %{"farseer" => "0.3"}
+    yaml = %{"farseer" => "0.4"}
     assert Yaml.check_version(yaml) == yaml
   end
 

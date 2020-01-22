@@ -1,4 +1,4 @@
-farseer: 0.1
+farseer: "0.4"
 endpoints:
     test:
         path: /test
