@@ -1,4 +1,4 @@
-defmodule Farseer.Server do
+defmodule Farseer.Application do
   alias Farseer.Log
   alias Farseer.Router
   alias Plug.Cowboy
@@ -16,8 +16,8 @@ defmodule Farseer.Server do
        scheme: :http,
        plug: Router,
        options: [
-         port: Farseer.Server.port(),
-         compress: Farseer.Server.compress()
+         port: Farseer.Application.port(),
+         compress: Farseer.Application.compress()
        ]}
     ]
   end
@@ -26,9 +26,9 @@ defmodule Farseer.Server do
     Farseer.Endpoints.init()
     options = [strategy: :one_for_one, name: Farseer.Supervisor]
 
-    Supervisor.start_link(Farseer.Server.children(), options)
-    Log.server_start(Farseer.Server.port())
+    Supervisor.start_link(Farseer.Application.children(), options)
+    Log.server_start(Farseer.Application.port())
 
-    Farseer.Server.loop()
+    Farseer.Application.loop()
   end
 end
