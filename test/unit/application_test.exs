@@ -6,12 +6,6 @@ defmodule FarseerTest.Application do
   alias Farseer.Endpoints
   alias Farseer.Log
 
-  test "loop" do
-    dummy Application, [{"loop", fn -> :loop end}] do
-      assert Application.loop() == :loop
-    end
-  end
-
   test "the port function" do
     dummy Confex, ["get_env/2"] do
       Application.port()
@@ -42,23 +36,19 @@ defmodule FarseerTest.Application do
   end
 
   test "start" do
-    dummy Supervisor, ["start_link/2"] do
+    options = [strategy: :one_for_one, name: Farseer.Supervisor]
+
+    dummy Supervisor, [{"start_link", fn _a, _b -> :start_link end}] do
       dummy Endpoints, [{"init", fn -> :ok end}] do
         dummy Log, [{"server_start", :server_start}] do
           dummy Application, [
             {"port", fn -> "port" end},
-            {"loop", fn -> :loop end},
             {"children", fn -> :children end}
           ] do
-            assert Application.start(1, 2) == Application.loop()
+            assert Application.start(1, 2) == :start_link
             assert called(Endpoints.init())
-            options = [strategy: :one_for_one, name: Farseer.Supervisor]
-
-            assert called(
-                     Supervisor.start_link(Application.children(), options)
-                   )
-
             assert called(Log.server_start("port"))
+            assert called(Supervisor.start_link(:children, options))
           end
         end
       end
