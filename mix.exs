@@ -9,7 +9,6 @@ defmodule Farseer.MixProject do
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
-      escript: escript(),
       deps: deps(),
       name: "Farseer",
       source_url: "https://github.com/strangemachines/farseer",
@@ -25,10 +24,6 @@ defmodule Farseer.MixProject do
     [
       extra_applications: [:logger]
     ]
-  end
-
-  def escript do
-    [main_module: Farseer.Cli]
   end
 
   defp deps do
