@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Far.Run do
+defmodule Mix.Tasks.Farseer.Run do
   use Mix.Task
 
   @shortdoc "Runs farseer"
