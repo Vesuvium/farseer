@@ -7,15 +7,19 @@ defmodule Farseer.Yaml do
   alias Farseer.Yaml
 
   @doc """
-  Reads the farseer.yml file, or tells the user it wasn't found.
+  Reads the farseer.yml file.
   """
   def read(path) do
     case YamlElixir.read_from_file(path) do
       {:ok, yaml} ->
         yaml
 
-      {:error, _error} ->
-        IO.puts("File #{path} was not found")
+      {:error, %YamlElixir.FileNotFoundError{message: _message}} ->
+        IO.puts("File \"#{path}\" was not found")
+        System.halt(1)
+
+      {:error, %YamlElixir.ParsingError{message: message}} ->
+        IO.puts("Failed to read \"#{path}\" because: #{message}")
         System.halt(1)
     end
   end
