@@ -3,6 +3,7 @@ defmodule FarseerTest.Yaml do
   import Dummy
 
   alias Farseer.Yaml
+  alias YamlElixir.{FileNotFoundError, ParsingError}
 
   test "read/1" do
     dummy YamlElixir, [{"read_from_file", {:ok, "data"}}] do
@@ -12,12 +13,30 @@ defmodule FarseerTest.Yaml do
     end
   end
 
-  test "read/1 when the file is not found" do
-    dummy System, ["halt"] do
-      dummy IO, ["puts"] do
-        Yaml.read("path")
-        assert called(IO.puts("File path was not found"))
-        assert called(System.halt(1))
+  test "read/1 with YamlElixir.FileNotFoundError" do
+    error = %FileNotFoundError{message: "message"}
+
+    dummy YamlElixir, [{"read_from_file", {:error, error}}] do
+      dummy System, ["halt"] do
+        dummy IO, ["puts"] do
+          Yaml.read("path")
+          assert called(IO.puts("File \"path\" was not found"))
+          assert called(System.halt(1))
+        end
+      end
+    end
+  end
+
+  test "read/1 with YamlElixir.ParsingError" do
+    error = %ParsingError{message: "message"}
+
+    dummy YamlElixir, [{"read_from_file", {:error, error}}] do
+      dummy System, ["halt"] do
+        dummy IO, ["puts"] do
+          Yaml.read("path")
+          assert called(IO.puts("Failed to read \"path\" because: message"))
+          assert called(System.halt(1))
+        end
       end
     end
   end
