@@ -15,4 +15,12 @@ defmodule FarseerTest.Rules do
   test "endpoints/1" do
     assert Rules.endpoints(%{"endpoints" => :endpoints}) == :endpoints
   end
+
+  test "get/2" do
+    assert Rules.get(%{key: :value}, [:key]) == :value
+  end
+
+  test "get/2 with no results" do
+    assert Rules.get(%{}, [:key]) == nil
+  end
 end
