@@ -3,6 +3,7 @@ defmodule FarseerTest.Body do
   import Dummy
 
   alias Farseer.Body
+  alias Farseer.Rules
   alias Plug.Conn
   alias Plug.Conn.Query
 
@@ -71,17 +72,20 @@ defmodule FarseerTest.Body do
       {"read_body", {:ok, "body", "conn"}},
       {"get_req_header", fn _a, _b -> ["header"] end}
     ] do
-      dummy Body, [
-        {"read", fn {:ok, _a, _b}, _c -> {:conn, :body} end},
-        {"add", fn {_a, _b}, _c -> :add end},
-        {"encode", fn _a, [_b] -> :encode end}
-      ] do
-        assert Body.process(:conn, %{"request_body" => "rb"}) == :encode
-        assert called(Conn.read_body(:conn))
-        assert called(Conn.get_req_header(:conn, "content-type"))
-        assert called(Body.read({:ok, "body", "conn"}, ["header"]))
-        assert called(Body.add({:conn, :body}, "rb"))
-        assert called(Body.encode(:add, ["header"]))
+      dummy Rules, [{"get", fn _a, _b -> :get end}] do
+        dummy Body, [
+          {"read", fn {:ok, _a, _b}, _c -> {:conn, :body} end},
+          {"add", fn {_a, _b}, _c -> :add end},
+          {"encode", fn _a, [_b] -> :encode end}
+        ] do
+          assert Body.process(:conn, :rules) == :encode
+          assert called(Conn.read_body(:conn))
+          assert called(Conn.get_req_header(:conn, "content-type"))
+          assert called(Body.read({:ok, "body", "conn"}, ["header"]))
+          assert called(Rules.get(:rules, ["request", "body", "add"]))
+          assert called(Body.add({:conn, :body}, :get))
+          assert called(Body.encode(:add, ["header"]))
+        end
       end
     end
   end

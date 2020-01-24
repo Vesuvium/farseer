@@ -1,5 +1,6 @@
 defmodule Farseer.Body do
   alias Farseer.Body
+  alias Farseer.Rules
   alias Plug.Conn
   alias Plug.Conn.Query
 
@@ -41,13 +42,16 @@ defmodule Farseer.Body do
     Conn.read_body(conn) |> elem(1)
   end
 
+  @doc """
+  Processes the body of a request.
+  """
   def process(conn, method_rules) do
     content_type = Conn.get_req_header(conn, "content-type")
 
     conn
     |> Conn.read_body()
     |> Body.read(content_type)
-    |> Body.add(method_rules["request_body"])
+    |> Body.add(Rules.get(method_rules, ["request", "body", "add"]))
     |> Body.encode(content_type)
   end
 end
