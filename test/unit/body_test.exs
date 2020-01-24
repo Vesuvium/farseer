@@ -7,6 +7,10 @@ defmodule FarseerTest.Body do
   alias Plug.Conn.Query
 
   test "add/2" do
+    assert Body.add({:conn, ""}, :extra_fields) == ""
+  end
+
+  test "add/2 with a map" do
     result = Body.add({:conn, %{"fields" => :f}}, [%{"extra" => :e}])
     assert result == %{"fields" => :f, "extra" => :e}
   end
