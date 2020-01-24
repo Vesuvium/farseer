@@ -5,7 +5,7 @@ defmodule Farseer.Endpoints do
   """
   alias Farseer.Endpoints
   alias Farseer.Ets
-  alias Farseer.Yaml
+  alias Farseer.Rules.Parser
 
   @options_list ["to", "request_headers"]
 
@@ -14,7 +14,7 @@ defmodule Farseer.Endpoints do
   """
   def endpoints() do
     Confex.get_env(:farseer, :yaml_file)
-    |> Yaml.load()
+    |> Parser.parse()
     |> Map.get("endpoints")
   end
 
