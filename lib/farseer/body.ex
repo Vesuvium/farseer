@@ -25,6 +25,10 @@ defmodule Farseer.Body do
     Query.encode(string)
   end
 
+  def encode(string, []) do
+    string
+  end
+
   def process(conn, nil) do
     Conn.read_body(conn) |> elem(1)
   end
