@@ -29,6 +29,10 @@ defmodule FarseerTest.Body do
     end
   end
 
+  test "read/2 without a content type" do
+    assert Body.read({:ok, :body, :conn}, []) == {:conn, :body}
+  end
+
   test "encode/2 with json" do
     content_type = ["application/json"]
 

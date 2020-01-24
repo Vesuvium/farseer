@@ -17,6 +17,10 @@ defmodule Farseer.Body do
     {conn, Query.decode(body)}
   end
 
+  def read({:ok, body, conn}, []) do
+    {conn, body}
+  end
+
   def encode(string, ["application/json"]) do
     Jason.encode!(string)
   end
