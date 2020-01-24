@@ -3,10 +3,14 @@ defmodule Farseer.Body do
   alias Plug.Conn
   alias Plug.Conn.Query
 
-  def add({_conn, fields}, extra_fields) do
+  def add({_conn, fields}, extra_fields) when is_map(fields) do
     Enum.reduce(extra_fields, fields, fn field, acc ->
       Map.merge(acc, field)
     end)
+  end
+
+  def add({_conn, fields}, _extra_fields) do
+    fields
   end
 
   def read({:ok, body, conn}, ["application/json"]) do
