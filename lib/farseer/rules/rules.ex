@@ -12,4 +12,8 @@ defmodule Farseer.Rules do
   def endpoints(rules) do
     Map.get(rules, "endpoints")
   end
+
+  def get(rules, target) do
+    get_in(rules, target)
+  end
 end
