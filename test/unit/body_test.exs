@@ -47,6 +47,10 @@ defmodule FarseerTest.Body do
     end
   end
 
+  test "encode/2 with plain text" do
+    assert Body.encode("string", []) == "string"
+  end
+
   test "process/2 with conn, nil" do
     dummy Conn, [{"read_body", {:ok, :body}}] do
       assert Body.process(:conn, nil) == :body
