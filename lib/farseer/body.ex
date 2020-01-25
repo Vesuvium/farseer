@@ -54,4 +54,12 @@ defmodule Farseer.Body do
     |> Body.add(Rules.get(method_rules, ["request", "body", "add"]))
     |> Body.encode(content_type)
   end
+
+  @doc """
+  Filters body keys.
+  """
+  def collect(body, collect) do
+    Enum.filter(body, fn {k, _v} -> Enum.member?(collect, k) end) |> Map.new()
+  end
+  end
 end

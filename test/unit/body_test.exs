@@ -89,4 +89,8 @@ defmodule FarseerTest.Body do
       end
     end
   end
+
+  test "collect/2" do
+    assert Body.collect(%{"k" => "v", "h" => "j"}, ["k"]) == %{"k" => "v"}
+  end
 end
