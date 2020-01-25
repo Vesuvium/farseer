@@ -93,4 +93,18 @@ defmodule FarseerTest.Body do
   test "collect/2" do
     assert Body.collect(%{"k" => "v", "h" => "j"}, ["k"]) == %{"k" => "v"}
   end
+
+  test "process_response/2" do
+    dummy Jason, [{"encode!", :encode}, {"decode!", :decode}] do
+      dummy Rules, [{"get", fn _a, _b -> :get end}] do
+        dummy Body, [{"collect", fn _a, _b -> :collect end}] do
+          assert Body.process_response(:body, :rules) == :encode
+          assert called(Jason.decode!(:body))
+          assert called(Rules.get(:rules, ["response", "body", "collect"]))
+          assert called(Body.collect(:decode, :get))
+          assert called(Jason.encode!(:collect))
+        end
+      end
+    end
+  end
 end
