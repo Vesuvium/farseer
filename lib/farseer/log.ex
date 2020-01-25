@@ -9,8 +9,11 @@ defmodule Farseer.Log do
     Logger.info("Farseer #{version} started on port #{port}")
   end
 
-  def endpoint_register(endpoint) do
-    Logger.debug("Endpoint #{endpoint} registered")
+  @doc """
+  Logs the registration of an endpoint.
+  """
+  def endpoint(method, endpoint) do
+    Logger.info("Endpoint #{method} #{endpoint} registered")
   end
 
   def request_received() do

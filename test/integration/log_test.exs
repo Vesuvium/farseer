@@ -7,8 +7,8 @@ defmodule FarseerTest.Log do
     assert Log.server_start("4000") == :ok
   end
 
-  test "endpoint_register/1" do
-    assert Log.endpoint_register("endpoint") == :ok
+  test "endpoint/2" do
+    assert Log.endpoint("get", "endpoint") == :ok
   end
 
   test "request_received/0" do
