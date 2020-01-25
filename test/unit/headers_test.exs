@@ -60,4 +60,20 @@ defmodule FarseerTest.Headers do
       end
     end
   end
+
+  test "process_response/2" do
+    dummy Rules, [{"get", fn _a, _b -> :get end}] do
+      dummy Headers, [{"add_to_conn", fn _a, _b -> :conn end}] do
+        Headers.process_response(
+          :conn,
+          %{headers: "headers"},
+          :path_rules,
+          :method_rules
+        )
+
+        assert called(Rules.get(:method_rules, ["response", "headers", "add"]))
+        assert called(Headers.add_to_conn(:conn, :get))
+      end
+    end
+  end
 end
