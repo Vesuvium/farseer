@@ -21,6 +21,6 @@ defmodule FarseerTest.Rules do
   end
 
   test "get/2 with no results" do
-    assert Rules.get(%{}, [:key]) == nil
+    assert Rules.get(%{}, [:key]) == []
   end
 end
