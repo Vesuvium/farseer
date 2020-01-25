@@ -4,7 +4,7 @@ defmodule FarseerTest.Endpoints do
 
   alias Farseer.Endpoints
   alias Farseer.Ets
-  alias Farseer.Rules.Parser
+  alias Farseer.Rules
 
   test "options/1" do
     endpoint = %{"to" => :to, "hello" => :no, "request_headers" => :headers}
@@ -14,11 +14,12 @@ defmodule FarseerTest.Endpoints do
 
   test "endpoints/0" do
     dummy Confex, [{"get_env", fn _a, _b -> :path end}] do
-      dummy Parser, [{"parse", %{"endpoints" => :ok}}] do
+      dummy Rules, [{"parse", :parse}, {"endpoints", :endpoints}] do
         result = Endpoints.endpoints()
         assert called(Confex.get_env(:farseer, :yaml_file))
-        assert called(Parser.parse(:path))
-        assert result == :ok
+        assert called(Rules.parse(:path))
+        assert called(Rules.endpoints(:parse))
+        assert result == :endpoints
       end
     end
   end
