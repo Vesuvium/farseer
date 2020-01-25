@@ -47,6 +47,13 @@ defmodule Farseer.Headers do
     end)
   end
 
+  def add_maps_to_conn(conn, headers) do
+    Enum.reduce(headers, conn, fn header, acc ->
+      header = header |> Map.to_list() |> List.to_tuple() |> elem(0)
+      Conn.put_resp_header(acc, elem(header, 0), elem(header, 1))
+    end)
+  end
+
   def process(conn, path_rules) do
     conn.req_headers
     |> Headers.filter()
