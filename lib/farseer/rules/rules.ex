@@ -14,6 +14,12 @@ defmodule Farseer.Rules do
   end
 
   def get(rules, target) do
-    get_in(rules, target)
+    result = get_in(rules, target)
+
+    if result != nil do
+      result
+    else
+      []
+    end
   end
 end
