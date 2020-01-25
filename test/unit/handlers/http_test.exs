@@ -110,18 +110,24 @@ defmodule FarseerTest.Handlers.Http do
   end
 
   test "handle/3" do
+    response = %{:headers => :headers, :status => 200, :body => :body}
+
     dummy Conn, ["send_resp/3"] do
-      dummy Http, [
-        {"send",
-         fn _a, _b, _c ->
-           %{:headers => :headers, :status => 200, :body => :body}
-         end}
-      ] do
-        dummy Headers, [{"add_to_conn", fn conn, _b -> conn end}] do
+      dummy Http, [{"send", fn _a, _b, _c -> response end}] do
+        dummy Headers, [{"process_response", fn conn, _b, _c, _d -> conn end}] do
           conn = %{:req_headers => :req_headers}
           Http.handle(conn, :path_rules, :method_rules)
           assert called(Http.send(conn, :path_rules, :method_rules))
-          assert called(Headers.add_to_conn(conn, :headers))
+
+          assert called(
+                   Headers.process_response(
+                     conn,
+                     response,
+                     :path_rules,
+                     :method_rules
+                   )
+                 )
+
           assert called(Conn.send_resp(conn, 200, :body))
         end
       end

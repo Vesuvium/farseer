@@ -76,7 +76,7 @@ defmodule Farseer.Handlers.Http do
     response = Http.send(conn, path_rules, method_rules)
 
     conn
-    |> Headers.add_to_conn(response.headers)
+    |> Headers.process_response(response, path_rules, method_rules)
     |> Conn.send_resp(response.status, response.body)
   end
 
