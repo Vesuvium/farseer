@@ -66,7 +66,7 @@ defmodule Farseer.Headers do
   def process_response(conn, response, path_rules, method_rules) do
     conn
     |> Headers.add_to_conn(response.headers)
-    |> Headers.add_to_conn(
+    |> Headers.add_maps_to_conn(
       Rules.get(method_rules, ["response", "headers", "add"])
     )
   end
