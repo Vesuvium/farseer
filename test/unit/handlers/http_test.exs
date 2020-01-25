@@ -89,6 +89,23 @@ defmodule FarseerTest.Handlers.Http do
     end
   end
 
+  test "send/3 with OPTIONS" do
+    conn = %{:method => "OPTIONS"}
+    path_rules = %{"to" => "path", "request_headers" => "request_headers"}
+    method_rules = %{}
+
+    dummy Tesla, ["options!/2"] do
+      dummy Headers, [{"process", fn _a, _b -> :headers end}] do
+        dummy Http, [{"to", fn _a, _b -> :to end}] do
+          Http.send(conn, path_rules, method_rules)
+          assert called(Headers.process(conn, path_rules))
+          assert called(Http.to(conn, "path"))
+          assert called(Tesla.options!(:to, headers: :headers))
+        end
+      end
+    end
+  end
+
   test "send/3" do
     conn = %{:method => "POST"}
     path_rules = %{"to" => "path", "request_headers" => "request_headers"}

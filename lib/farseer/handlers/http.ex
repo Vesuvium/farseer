@@ -57,6 +57,11 @@ defmodule Farseer.Handlers.Http do
     Tesla.get!(Http.to(conn, path_rules["to"]), headers: headers)
   end
 
+  def send(%{method: "OPTIONS"} = conn, path_rules, _method_rules) do
+    headers = Headers.process(conn, path_rules)
+    Tesla.options!(Http.to(conn, path_rules["to"]), headers: headers)
+  end
+
   def send(%{method: "DELETE"} = conn, path_rules, _method_rules) do
     headers = Headers.process(conn, path_rules)
     Tesla.delete!(Http.to(conn, path_rules["to"]), headers: headers)
