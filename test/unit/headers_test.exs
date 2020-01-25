@@ -42,9 +42,17 @@ defmodule FarseerTest.Headers do
     assert Headers.add([:headers], nil) == [:headers]
   end
 
-  test "adding headers to conn" do
+  test "add_to_conn/2" do
     dummy Conn, [{"put_resp_header", fn conn, _h, _v -> conn end}] do
       result = Headers.add_to_conn(:conn, [{"header", "value"}])
+      assert called(Conn.put_resp_header(:conn, "header", "value"))
+      assert result == :conn
+    end
+  end
+
+  test "add_maps_to_conn/2" do
+    dummy Conn, [{"put_resp_header", fn conn, _h, _v -> conn end}] do
+      result = Headers.add_maps_to_conn(:conn, [%{"header" => "value"}])
       assert called(Conn.put_resp_header(:conn, "header", "value"))
       assert result == :conn
     end
