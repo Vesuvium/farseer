@@ -5,6 +5,7 @@ defmodule Farseer.Endpoints do
   """
   alias Farseer.Endpoints
   alias Farseer.Ets
+  alias Farseer.Log
   alias Farseer.Rules
 
   @options_list ["to", "request_headers"]
@@ -49,6 +50,7 @@ defmodule Farseer.Endpoints do
     Enum.each(methods, fn method ->
       method_name = Endpoints.method_name(method)
       method_rules = Endpoints.method_rules(method, method_name)
+      Log.endpoint(method_name, path)
       Ets.insert(method_name, path, path_rules, method_rules)
     end)
   end
