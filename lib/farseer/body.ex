@@ -61,5 +61,14 @@ defmodule Farseer.Body do
   def collect(body, collect) do
     Enum.filter(body, fn {k, _v} -> Enum.member?(collect, k) end) |> Map.new()
   end
+
+  @doc """
+  Processes the body of a response.
+  """
+  def process_response(body, method_rules) do
+    body
+    |> Jason.decode!()
+    |> Body.collect(Rules.get(method_rules, ["response", "body", "collect"]))
+    |> Jason.encode!()
   end
 end
