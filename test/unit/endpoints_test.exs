@@ -4,6 +4,7 @@ defmodule FarseerTest.Endpoints do
 
   alias Farseer.Endpoints
   alias Farseer.Ets
+  alias Farseer.Log
   alias Farseer.Rules
 
   test "options/1" do
@@ -46,9 +47,12 @@ defmodule FarseerTest.Endpoints do
         {"method_name", :method_name},
         {"method_rules", fn _a, _b -> :method_rules end}
       ] do
-        Endpoints.register_methods("/", :path_rules, ["get"])
-        assert called(Endpoints.method_name("get"))
-        assert called(Endpoints.method_rules("get", :method_name))
+        dummy Log, [{"endpoint", fn _a, _b -> :endpoint end}] do
+          Endpoints.register_methods("/", :path_rules, ["get"])
+          assert called(Endpoints.method_name("get"))
+          assert called(Endpoints.method_rules("get", :method_name))
+          assert called(Log.endpoint(:method_name, "/"))
+        end
       end
     end
   end
