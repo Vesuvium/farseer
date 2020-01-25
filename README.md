@@ -37,7 +37,7 @@ farseer run --port 8000
 Simple configuration:
 
 ```yaml
-farseer: "0.3"
+farseer: "0.4"
 endpoints:
     /test:
         methods:
@@ -67,11 +67,14 @@ Transformations:
 /login:
     methods:
         - post:
-            request_body:
-                - extra_field: "value" # adds a field to the request body
+            request:
+                body:
+                    - extra_field: "value" # adds a field to the request body
         - patch:
-            request_headers:
-                - Bearer: "my token" # adds an header to the request
+            request:
+                headers:
+                    add:
+                        - Bearer: "my token" # adds an header to the request
     transform:
         data:
             items: body.object # returns body.objects instead of body.items
