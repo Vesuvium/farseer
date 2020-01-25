@@ -3,6 +3,7 @@ defmodule FarseerTest.Headers do
   import Dummy
 
   alias Farseer.Headers
+  alias Farseer.Rules
   alias Plug.Conn
 
   test "filtering request headers" do
@@ -50,12 +51,13 @@ defmodule FarseerTest.Headers do
   end
 
   test "process/2" do
-    path_rules = %{"request_headers" => "rh"}
-
-    dummy Headers, [{"filter", :filter}, {"add", fn _a, _b -> :add end}] do
-      assert Headers.process(%{:req_headers => :headers}, path_rules) == :add
-      assert called(Headers.filter(:headers))
-      assert called(Headers.add(:filter, "rh"))
+    dummy Rules, [{"get", fn _a, _b -> :get end}] do
+      dummy Headers, [{"filter", :filter}, {"add", fn _a, _b -> :add end}] do
+        assert Headers.process(%{:req_headers => :headers}, :rules) == :add
+        assert called(Headers.filter(:headers))
+        assert called(Rules.get(:rules, ["request", "headers", "add"]))
+        assert called(Headers.add(:filter, :get))
+      end
     end
   end
 end

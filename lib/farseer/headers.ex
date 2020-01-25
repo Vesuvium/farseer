@@ -3,6 +3,7 @@ defmodule Farseer.Headers do
   Utilities to work with headers.
   """
   alias Farseer.Headers
+  alias Farseer.Rules
   alias Plug.Conn
 
   def filter(headers) do
@@ -37,6 +38,9 @@ defmodule Farseer.Headers do
     end
   end
 
+  @doc """
+  Adds headers to a Plug.Conn object.
+  """
   def add_to_conn(conn, headers) do
     Enum.reduce(headers, conn, fn {key, value}, acc ->
       Conn.put_resp_header(acc, key, value)
@@ -46,6 +50,6 @@ defmodule Farseer.Headers do
   def process(conn, path_rules) do
     conn.req_headers
     |> Headers.filter()
-    |> Headers.add(path_rules["request_headers"])
+    |> Headers.add(Rules.get(path_rules, ["request", "headers", "add"]))
   end
 end
