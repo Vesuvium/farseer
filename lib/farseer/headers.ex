@@ -15,14 +15,16 @@ defmodule Farseer.Headers do
     "Basic " <> Base.encode64(username <> ":" <> password)
   end
 
+  def resolve("authorization", options) do
+    {"authorization",
+     Headers.basic_auth(options["username"], options["password"])}
+  end
+
   @doc """
   Resolves an header and its options to its final value.
   """
-  def resolve(header, options) do
-    cond do
-      header == "authorization" ->
-        {header, Headers.basic_auth(options["username"], options["password"])}
-    end
+  def resolve(header, value) do
+    {header, value}
   end
 
   def add(headers, headers_to_add) do

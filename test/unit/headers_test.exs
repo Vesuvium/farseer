@@ -17,7 +17,11 @@ defmodule FarseerTest.Headers do
     end
   end
 
-  test "resolving an header" do
+  test "resolve/2" do
+    assert Headers.resolve(:header, :value) == {:header, :value}
+  end
+
+  test "resolve/2 with authorization" do
     dummy Headers, ["basic_auth/2"] do
       options = %{"username" => "user", "password" => "password"}
       result = Headers.resolve("authorization", options)
