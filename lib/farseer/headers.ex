@@ -52,4 +52,15 @@ defmodule Farseer.Headers do
     |> Headers.filter()
     |> Headers.add(Rules.get(path_rules, ["request", "headers", "add"]))
   end
+
+  @doc """
+  Adds headers to a response.
+  """
+  def process_response(conn, response, path_rules, method_rules) do
+    conn
+    |> Headers.add_to_conn(response.headers)
+    |> Headers.add_to_conn(
+      Rules.get(method_rules, ["response", "headers", "add"])
+    )
+  end
 end
