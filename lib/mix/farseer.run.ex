@@ -4,7 +4,6 @@ defmodule Mix.Tasks.Farseer.Run do
   @shortdoc "Runs farseer"
 
   def run(_args) do
-    Application.ensure_all_started(:farseer, :permanent)
-    System.no_halt(true)
+    Farseer.Cli.run()
   end
 end
