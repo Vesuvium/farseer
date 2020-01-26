@@ -6,7 +6,7 @@ defmodule Farseer.Rules.Validator do
   """
   alias Farseer.Rules.Validator
 
-  @supported_versions ["0.4", "0.4.0", "0.4.1"]
+  @supported_versions ["0.4", "0.4.0", "0.4.1", "0.4.2"]
 
   @doc """
   Ensures that a farseer version has been declared.
