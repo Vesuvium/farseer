@@ -1,8 +1,9 @@
 defmodule Farseer.Application do
-  alias Farseer.Application
   alias Farseer.Log
   alias Farseer.Router
   alias Plug.Cowboy
+
+  use Application
 
   def port, do: Confex.get_env(:farseer, :port)
   def compress, do: Confex.get_env(:farseer, :compress)
@@ -13,8 +14,8 @@ defmodule Farseer.Application do
        scheme: :http,
        plug: Router,
        options: [
-         port: Application.port(),
-         compress: Application.compress()
+         port: Farseer.Application.port(),
+         compress: Farseer.Application.compress()
        ]}
     ]
   end
@@ -23,7 +24,7 @@ defmodule Farseer.Application do
     Farseer.Endpoints.init()
     options = [strategy: :one_for_one, name: Farseer.Supervisor]
 
-    Log.server_start(Application.port())
-    Supervisor.start_link(Application.children(), options)
+    Log.server_start(Farseer.Application.port())
+    Supervisor.start_link(Farseer.Application.children(), options)
   end
 end
