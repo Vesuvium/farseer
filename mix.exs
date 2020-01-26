@@ -30,13 +30,12 @@ defmodule Farseer.MixProject do
   defp deps do
     [
       {:confex, "~> 3.3"},
-      {:cowboy, "~> 1.0"},
       {:credo, "~> 0.9", only: :dev, runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:dummy, "~> 1.2", only: :test},
       {:jason, "~> 1.1"},
-      {:plug, "~> 1.0"},
-      {:plug_cowboy, "~> 1.0"},
+      {:plug, "~> 1.8"},
+      {:plug_cowboy, "~> 2.1"},
       {:tesla, "~> 1.2"},
       {:yaml_elixir, "~> 2.1"}
     ]
