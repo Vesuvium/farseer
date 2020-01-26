@@ -3,15 +3,8 @@ defmodule Mix.Tasks.Farseer.Run do
 
   @shortdoc "Runs farseer"
 
-  def run(args) do
-    Mix.Tasks.Run.run(run_args() ++ args)
-  end
-
-  defp run_args do
-    if iex_running?(), do: [], else: ["--no-halt"]
-  end
-
-  defp iex_running? do
-    Code.ensure_loaded?(IEx) and IEx.started?()
+  def run(_args) do
+    Application.ensure_all_started(:farseer, :permanent)
+    System.no_halt(true)
   end
 end
