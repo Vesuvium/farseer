@@ -68,8 +68,13 @@ defmodule Farseer.Handlers.Http do
   end
 
   def send(%{method: "DELETE"} = conn, path_rules, _method_rules) do
+    conn = Conn.fetch_query_params(conn)
     headers = Headers.process(conn, path_rules)
-    Tesla.delete!(Http.to(conn, path_rules["to"]), headers: headers)
+
+    Tesla.delete!(Http.to(conn, path_rules["to"]),
+      query: conn.query_params,
+      headers: headers
+    )
   end
 
   @doc """
