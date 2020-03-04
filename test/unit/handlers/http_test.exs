@@ -76,17 +76,23 @@ defmodule FarseerTest.Handlers.Http do
   end
 
   test "send/3 with DELETE" do
-    conn = %{:method => "DELETE"}
+    conn = %{:method => "DELETE", :query_params => "params"}
     path_rules = %{"to" => "path", "request_headers" => "request_headers"}
     method_rules = %{}
 
-    dummy Tesla, ["delete!/2"] do
-      dummy Headers, [{"process", fn _a, _b -> :headers end}] do
-        dummy Http, [{"to", fn _a, _b -> :to end}] do
-          Http.send(conn, path_rules, method_rules)
-          assert called(Headers.process(conn, path_rules))
-          assert called(Http.to(conn, "path"))
-          assert called(Tesla.delete!(:to, headers: :headers))
+    dummy Conn, [{"fetch_query_params", conn}] do
+      dummy Tesla, ["delete!/2"] do
+        dummy Headers, [{"process", fn _a, _b -> :headers end}] do
+          dummy Http, [{"to", fn _a, _b -> :to end}] do
+            Http.send(conn, path_rules, method_rules)
+            assert called(Conn.fetch_query_params(conn))
+            assert called(Headers.process(conn, path_rules))
+            assert called(Http.to(conn, "path"))
+
+            assert called(
+                     Tesla.delete!(:to, query: "params", headers: :headers)
+                   )
+          end
         end
       end
     end
