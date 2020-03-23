@@ -56,10 +56,14 @@ defmodule Farseer.Endpoints do
     Ets.insert(method_name, path, handler, path_rules, method_rules)
   end
 
-  def register_methods(path, handler, path_rules, methods) do
+  def register_methods(path, handler, path_rules, %{"methods" => methods}) do
     Enum.each(methods, fn method ->
       Endpoints.register_method(path, handler, path_rules, method)
     end)
+  end
+
+  def register_methods(path, handler, path_rules, _rules) do
+    Ets.insert("GET", path, handler, path_rules, nil)
   end
 
   @doc """
@@ -68,12 +72,7 @@ defmodule Farseer.Endpoints do
   def register(path, rules) do
     handler = Endpoints.handler(rules)
     path_rules = Endpoints.options(rules)
-
-    if Map.has_key?(rules, "methods") do
-      Endpoints.register_methods(path, handler, path_rules, rules["methods"])
-    else
-      Ets.insert("GET", path, handler, path_rules, nil)
-    end
+    Endpoints.register_methods(path, handler, path_rules, rules)
   end
 
   @doc """
