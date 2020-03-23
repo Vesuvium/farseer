@@ -20,12 +20,13 @@ defmodule FarseerTest.Ets do
     assert result == {"GET", "", "hello", :"$1"}
   end
 
-  test "insert/4" do
+  test "insert/5" do
     :ets.new(:test, [:set, :protected, :named_table])
+    row = {:id, :handler, :path_rules, :method_rules}
 
     dummy Ets, [{"table", fn -> :test end}, {"id", fn _a, _b -> :id end}] do
-      Ets.insert(:method, :path, :path_rules, :method_rules)
-      assert :ets.lookup(:test, :id) == [{:id, :path_rules, :method_rules}]
+      Ets.insert(:method, :path, :handler, :path_rules, :method_rules)
+      assert :ets.lookup(:test, :id) == [row]
     end
   end
 
@@ -53,14 +54,15 @@ defmodule FarseerTest.Ets do
     template = {"GET", "", "/world", :"$1"}
     path = {"GET", "", "/world", "1"}
     :ets.new(:test, [:set, :protected, :named_table])
-    :ets.insert(:test, {id, :path_rules, :method_rules})
+    :ets.insert(:test, {id, :handler, :path_rules, :method_rules})
+    row = {id, :handler, :path_rules, :method_rules}
 
     dummy Ets, [
       {"table", fn -> :test end},
       {"id", fn _a, _b -> path end},
       {"templated_id", template}
     ] do
-      assert Ets.match("GET", "/world/1") == [{id, :path_rules, :method_rules}]
+      assert Ets.match("GET", "/world/1") == [row]
     end
   end
 end

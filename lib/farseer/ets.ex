@@ -30,8 +30,11 @@ defmodule Farseer.Ets do
     |> List.to_tuple()
   end
 
-  def insert(method, path, path_rules, method_rules) do
-    :ets.insert(Ets.table(), {Ets.id(method, path), path_rules, method_rules})
+  def insert(method, path, handler, path_rules, method_rules) do
+    :ets.insert(
+      Ets.table(),
+      {Ets.id(method, path), handler, path_rules, method_rules}
+    )
   end
 
   @doc """
@@ -50,7 +53,7 @@ defmodule Farseer.Ets do
     result = :ets.lookup(table, id)
 
     if result == [] do
-      :ets.match_object(table, {Ets.templated_id(id), :"$2", :"$3"})
+      :ets.match_object(table, {Ets.templated_id(id), :"$2", :"$3", :"$4"})
     else
       result
     end
