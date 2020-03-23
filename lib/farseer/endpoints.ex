@@ -29,6 +29,9 @@ defmodule Farseer.Endpoints do
     end)
   end
 
+  def handler(%{"handler" => handler}), do: handler
+  def handler(_rules), do: "Http"
+
   @doc """
   Finds the method name to store in the ets table.
   """

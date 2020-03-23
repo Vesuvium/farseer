@@ -25,6 +25,14 @@ defmodule FarseerTest.Endpoints do
     end
   end
 
+  test "handler/1" do
+    assert Endpoints.handler(%{"handler" => "Handler"}) == "Handler"
+  end
+
+  test "handler/1 without an handler" do
+    assert Endpoints.handler(%{}) == "Http"
+  end
+
   test "method_name/1" do
     assert Endpoints.method_name("get") == "GET"
   end
