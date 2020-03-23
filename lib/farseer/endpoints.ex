@@ -62,12 +62,13 @@ defmodule Farseer.Endpoints do
   Registers paths with the corresponding rules.
   """
   def register(path, rules) do
+    handler = Endpoints.handler(rules)
     path_rules = Endpoints.options(rules)
 
     if Map.has_key?(rules, "methods") do
-      Endpoints.register_methods(path, path_rules, rules["methods"])
+      Endpoints.register_methods(path, handler, path_rules, rules["methods"])
     else
-      Ets.insert("GET", path, path_rules, nil)
+      Ets.insert("GET", path, handler, path_rules, nil)
     end
   end
 
