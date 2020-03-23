@@ -49,12 +49,16 @@ defmodule Farseer.Endpoints do
     end
   end
 
+  def register_method(path, handler, path_rules, method) do
+    method_name = Endpoints.method_name(method)
+    method_rules = Endpoints.method_rules(method, method_name)
+    Log.endpoint(method_name, path)
+    Ets.insert(method_name, path, handler, path_rules, method_rules)
+  end
+
   def register_methods(path, handler, path_rules, methods) do
     Enum.each(methods, fn method ->
-      method_name = Endpoints.method_name(method)
-      method_rules = Endpoints.method_rules(method, method_name)
-      Log.endpoint(method_name, path)
-      Ets.insert(method_name, path, handler, path_rules, method_rules)
+      Endpoints.register_method(path, handler, path_rules, method)
     end)
   end
 
