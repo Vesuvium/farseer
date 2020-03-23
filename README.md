@@ -37,7 +37,7 @@ farseer run --port 8000
 Simple configuration:
 
 ```yaml
-farseer: "0.4.4"
+farseer: "0.5.0"
 endpoints:
     /test:
         methods:
