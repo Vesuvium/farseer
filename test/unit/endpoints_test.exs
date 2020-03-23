@@ -55,14 +55,14 @@ defmodule FarseerTest.Endpoints do
     assert Endpoints.method_rules(%{"get" => :get}, "GET") == :get
   end
 
-  test "register_methods/3" do
+  test "register_method/4" do
     dummy Ets, [{"insert", fn _a, _b, _c, _d, _e -> :insert end}] do
       dummy Endpoints, [
         {"method_name", :method_name},
         {"method_rules", fn _a, _b -> :method_rules end}
       ] do
         dummy Log, [{"endpoint", fn _a, _b -> :endpoint end}] do
-          Endpoints.register_methods("/", :handler, :path_rules, ["get"])
+          Endpoints.register_method("/", :handler, :path_rules, "get")
           assert called(Endpoints.method_name("get"))
           assert called(Endpoints.method_rules("get", :method_name))
           assert called(Log.endpoint(:method_name, "/"))
@@ -78,6 +78,16 @@ defmodule FarseerTest.Endpoints do
                  )
         end
       end
+    end
+  end
+
+  test "register_methods/4" do
+    dummy Endpoints, [{"register_method", fn _a, _b, _c, _d -> nil end}] do
+      Endpoints.register_methods("/", :handler, :path_rules, ["get"])
+
+      assert called(
+               Endpoints.register_method("/", :handler, :path_rules, "get")
+             )
     end
   end
 
