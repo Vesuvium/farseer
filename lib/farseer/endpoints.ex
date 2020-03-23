@@ -8,7 +8,7 @@ defmodule Farseer.Endpoints do
   alias Farseer.Log
   alias Farseer.Rules
 
-  @options_list ["to", "request_headers"]
+  @options_list ["to", "request_headers", "response"]
 
   @doc """
   Get the endpoints from the yaml file.

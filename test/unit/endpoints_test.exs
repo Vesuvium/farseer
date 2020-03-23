@@ -8,8 +8,14 @@ defmodule FarseerTest.Endpoints do
   alias Farseer.Rules
 
   test "options/1" do
-    endpoint = %{"to" => :to, "hello" => :no, "request_headers" => :headers}
-    expected = %{"to" => :to, "request_headers" => :headers}
+    endpoint = %{
+      "to" => :to,
+      "hello" => :no,
+      "request_headers" => :headers,
+      "response" => :response
+    }
+
+    expected = Map.drop(endpoint, ["hello"])
     assert Endpoints.options(endpoint) == expected
   end
 
