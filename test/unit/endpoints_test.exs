@@ -76,19 +76,24 @@ defmodule FarseerTest.Endpoints do
 
     dummy Endpoints, [
       {"options", :options},
-      {"register_methods", fn _a, _b, _c -> :methods end}
+      {"handler", :handler},
+      {"register_methods", fn _a, _b, _c, _d -> :methods end}
     ] do
       assert Endpoints.register("/", rules) == :methods
       assert called(Endpoints.options(rules))
-      assert called(Endpoints.register_methods("/", :options, ["get"]))
+      assert called(Endpoints.handler(rules))
+
+      assert called(
+               Endpoints.register_methods("/", :handler, :options, ["get"])
+             )
     end
   end
 
   test "register/2 without methods" do
-    dummy Ets, [{"insert", fn _a, _b, _c, _d -> :insert end}] do
-      dummy Endpoints, [{"options", :options}] do
+    dummy Ets, [{"insert", fn _a, _b, _c, _d, _e -> :insert end}] do
+      dummy Endpoints, [{"options", :options}, {"handler", :handler}] do
         assert Endpoints.register("/", %{"to" => :to}) == :insert
-        assert called(Ets.insert("GET", "/", :options, nil))
+        assert called(Ets.insert("GET", "/", :handler, :options, nil))
       end
     end
   end
