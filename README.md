@@ -39,15 +39,15 @@ Simple configuration:
 ```yaml
 farseer: "0.5.0"
 endpoints:
-    /test:
-        methods:
-            - get
-            - post
-        to: "https://internalservice:3000"
-    /login:
-        methods:
-            - post
-        to: "https://loginservice"
+  /test:
+    methods:
+      - get
+      - post
+    to: "https://internalservice:3000"
+  /login:
+    methods:
+      - post
+  to: "https://loginservice"
 ```
 
 
@@ -67,37 +67,38 @@ Transformations:
 
 ```yaml
 /login:
-    methods:
-        - post:
-            request:
-                body:
-                    - extra_field: "value" # adds a field to the request body
-        - patch:
-            request:
-                headers:
-                    add:
-                        - Bearer: "$TOKEN" # adds an header to the request using an env var
-    transform:
-        data:
-            items: body.object # returns body.objects instead of body.items
-        headers:
-            delete:
-                - X-service-header
+  methods:
+    - post:
+        request:
+          body:
+            - extra_field: "value" # adds a field to the request body
+    - patch:
+        request:
+          headers:
             add:
-                - X-awesome-header: "value"
+              - Bearer: "$TOKEN" # adds an header to the request using an env var
+  to: "https://example.com"
+  transform:
+    data:
+      items: body.object # returns body.objects instead of body.items
+    headers:
+      delete:
+        - X-service-header
+      add:
+        - X-awesome-header: "value"
 ```
 
 Error handling:
 
 ```yaml
 /login:
-    methods:
-        - post
-    to: https://loginservice
-    errors:
-        - 500: 401 # transform 500 in 401
-        - 414: # transform 414 in 401, with custom message
-            status: 401
-            message: "teapots are not welcome!"
-        - any: 401 # transform any error in a 401
+  methods:
+    - post
+  to: https://loginservice
+  errors:
+    - 500: 401 # transform 500 in 401
+    - 414: # transform 414 in 401, with custom message
+      status: 401
+      message: "teapots are not welcome!"
+    - any: 401 # transform any error in a 401
 ```
