@@ -3,8 +3,7 @@ defmodule FarseerTest.Rules.Parser do
   import Dummy
 
   alias Farseer.Log
-  alias Farseer.Rules.Parser
-  alias Farseer.Rules.Validator
+  alias Farseer.Rules.{Parser, Validator}
   alias YamlElixir.{FileNotFoundError, ParsingError}
 
   test "read/1" do
