@@ -54,6 +54,29 @@ defmodule FarseerTest.Rules.Parser do
     end
   end
 
+  test "yaml/1" do
+    dummy YamlElixir, [{"read_from_string", {:ok, "data"}}] do
+      yaml = Parser.yaml("string")
+      assert called(YamlElixir.read_from_string("string"))
+      assert yaml == "data"
+    end
+  end
+
+  test "yaml/1 with ParsingError" do
+    error = %ParsingError{message: "message"}
+    error_message = "Failed to parse configuration because: message"
+
+    dummy YamlElixir, [{"read_from_string", {:error, error}}] do
+      dummy System, ["halt"] do
+        dummy IO, ["puts"] do
+          Parser.yaml("string")
+          assert called(IO.puts(error_message))
+          assert called(System.halt(1))
+        end
+      end
+    end
+  end
+
   test "parse/1" do
     dummy Parser, ["read"] do
       dummy Validator, ["validate"] do
