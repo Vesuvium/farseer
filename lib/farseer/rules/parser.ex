@@ -1,7 +1,19 @@
 defmodule Farseer.Rules.Parser do
+  alias Farseer.Log
   alias Farseer.Rules.Parser
   alias Farseer.Rules.Validator
   alias YamlElixir.{FileNotFoundError, ParsingError}
+
+  @doc """
+  Replaces variables in farseer.yml with the corresponding env var.
+  """
+  def replace(string) do
+    Enum.reduce(System.get_env(), string, fn {key, value}, acc ->
+      placeholder = "$#{key}"
+      Log.variable_replacing(string, placeholder, value)
+      String.replace(acc, placeholder, value)
+    end)
+  end
 
   def read(path) do
     case YamlElixir.read_from_file(path) do
