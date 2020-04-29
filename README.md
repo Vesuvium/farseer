@@ -56,9 +56,11 @@ Specifying an handler:
 
 ```yaml
 /upload:
-    methods:
-        - post
-    handler: "Farseer.Handlers.S3"
+  methods:
+    - get
+  handler: Json
+  response:
+    message: "hello world"
 ```
 
 Transformations:
