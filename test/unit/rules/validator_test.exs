@@ -21,7 +21,7 @@ defmodule FarseerTest.Rules.Validator do
   end
 
   test "version/1" do
-    assert Validator.version(%{"farseer" => "0.5"}) == %{"farseer" => "0.5"}
+    assert Validator.version(%{"farseer" => "0.5.1"}) == %{"farseer" => "0.5.1"}
   end
 
   test "version/1 with an supported version" do

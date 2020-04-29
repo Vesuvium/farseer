@@ -14,7 +14,8 @@ defmodule Farseer.Rules.Validator do
     "0.4.3",
     "0.4.4",
     "0.5",
-    "0.5.0"
+    "0.5.0",
+    "0.5.1"
   ]
 
   @doc """
