@@ -2,6 +2,7 @@ defmodule FarseerTest.Rules.Parser do
   use ExUnit.Case
   import Dummy
 
+  alias Farseer.Log
   alias Farseer.Rules.Parser
   alias Farseer.Rules.Validator
   alias YamlElixir.{FileNotFoundError, ParsingError}
@@ -38,6 +39,18 @@ defmodule FarseerTest.Rules.Parser do
           assert called(IO.puts("Failed to read \"path\" because: message"))
           assert called(System.halt(1))
         end
+      end
+    end
+  end
+
+  test "replace/1" do
+    string = "text $key"
+
+    dummy System, [{"get_env/0", %{"key" => "value"}}] do
+      dummy Log, ["variable_replacing/3"] do
+        assert Parser.replace(string) == "text value"
+        assert called(System.get_env())
+        assert called(Log.variable_replacing(string, "$key", "value"))
       end
     end
   end
