@@ -74,7 +74,7 @@ Transformations:
             request:
                 headers:
                     add:
-                        - Bearer: "my token" # adds an header to the request
+                        - Bearer: "$TOKEN" # adds an header to the request using an env var
     transform:
         data:
             items: body.object # returns body.objects instead of body.items
