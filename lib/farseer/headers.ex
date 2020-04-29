@@ -63,7 +63,7 @@ defmodule Farseer.Headers do
   @doc """
   Adds headers to a response.
   """
-  def process_response(conn, response, path_rules, method_rules) do
+  def process_response(conn, response, _path_rules, method_rules) do
     conn
     |> Headers.add_to_conn(response.headers)
     |> Headers.add_maps_to_conn(
