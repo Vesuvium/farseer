@@ -18,4 +18,12 @@ defmodule FarseerTest.Log do
   test "response_sending/0" do
     assert Log.response_sending() == :ok
   end
+
+  test "variable_replacing/3" do
+    assert Log.variable_replacing("string", "ing", "value") == :ok
+  end
+
+  test "variable_replacing/3 not replacing" do
+    assert Log.variable_replacing("string", "whatever", "value") == nil
+  end
 end

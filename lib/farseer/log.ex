@@ -23,4 +23,15 @@ defmodule Farseer.Log do
   def response_sending() do
     Logger.info("Sending response")
   end
+
+  @doc """
+  Logs the replacement of environment variables.
+  """
+  def variable_replacing(string, key, value) do
+    if Logger.level() == :debug do
+      if String.contains?(string, key) do
+        Logger.debug("Replacing #{key} with #{value}")
+      end
+    end
+  end
 end
