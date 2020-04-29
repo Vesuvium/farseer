@@ -4,20 +4,18 @@ defmodule FarseerTest.Rules.Parser do
 
   alias Farseer.Log
   alias Farseer.Rules.{Parser, Validator}
-  alias YamlElixir.{FileNotFoundError, ParsingError}
+  alias YamlElixir.ParsingError
 
   test "read/1" do
-    dummy YamlElixir, [{"read_from_file", {:ok, "data"}}] do
+    dummy File, [{"read", {:ok, "string"}}] do
       yaml = Parser.read("path")
-      assert called(YamlElixir.read_from_file("path"))
-      assert yaml == "data"
+      assert called(File.read("path"))
+      assert yaml == "string"
     end
   end
 
-  test "read/1 with FileNotFoundError" do
-    error = %FileNotFoundError{message: "message"}
-
-    dummy YamlElixir, [{"read_from_file", {:error, error}}] do
+  test "read/1 with :enoent" do
+    dummy File, [{"read", {:error, :enoent}}] do
       dummy System, ["halt"] do
         dummy IO, ["puts"] do
           Parser.read("path")
@@ -28,14 +26,12 @@ defmodule FarseerTest.Rules.Parser do
     end
   end
 
-  test "read/1 with ParsingError" do
-    error = %ParsingError{message: "message"}
-
-    dummy YamlElixir, [{"read_from_file", {:error, error}}] do
+  test "read/1 with :enoaccess" do
+    dummy File, [{"read", {:error, :enoaccess}}] do
       dummy System, ["halt"] do
         dummy IO, ["puts"] do
           Parser.read("path")
-          assert called(IO.puts("Failed to read \"path\" because: message"))
+          assert called(IO.puts("File \"path\" could not be read"))
           assert called(System.halt(1))
         end
       end
