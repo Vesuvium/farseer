@@ -43,6 +43,8 @@ defmodule Farseer.Rules.Parser do
   def parse(path) do
     path
     |> Parser.read()
+    |> Parser.replace()
+    |> Parser.yaml()
     |> Validator.validate()
   end
 end

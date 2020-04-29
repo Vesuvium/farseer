@@ -74,10 +74,13 @@ defmodule FarseerTest.Rules.Parser do
   end
 
   test "parse/1" do
-    dummy Parser, ["read"] do
-      dummy Validator, ["validate"] do
-        assert Parser.parse("path") == "path"
-        assert called(Validator.validate("path"))
+    dummy Parser, [{"read", :read}, {"replace", :replace}, {"yaml", :yaml}] do
+      dummy Validator, [{"validate", :validate}] do
+        assert Parser.parse("path") == :validate
+        assert called(Parser.read("path"))
+        assert called(Parser.replace(:read))
+        assert called(Parser.yaml(:replace))
+        assert called(Validator.validate(:yaml))
       end
     end
   end
