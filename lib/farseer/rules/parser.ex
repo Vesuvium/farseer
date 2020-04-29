@@ -1,7 +1,6 @@
 defmodule Farseer.Rules.Parser do
   alias Farseer.Log
-  alias Farseer.Rules.Parser
-  alias Farseer.Rules.Validator
+  alias Farseer.Rules.{Parser, Validator}
   alias YamlElixir.{FileNotFoundError, ParsingError}
 
   @doc """
